@@ -1,61 +1,204 @@
-body
-{
-	background-color: #333333;
-	color: #ffffff;
-	font-family: monospace;
-}
-
-a
-{
+a {
 	color: #ffffdd;
 }
 
-a:hover
-{
+a:hover {
 	color: #ffff88;
 }
 
-#pickers
-{
-	padding-bottom: 10px;
+
+
+:root {
+	--bg-dark-surface: #333333;
+	--bg-card: #232931;
+	--border-color: #465362;
+	--accent-color: #b6dd0a;
 }
 
-#sprite
-{
-	padding-bottom: 10px;
+body {
+	/* font-family: 'Inter', sans-serif; */
+	font-family: monospace;
+	background-color: var(--bg-dark-surface);
+	color: #e2e8f0;
+	min-height: 100vh;
 }
 
-#pErase
-{
-	margin-bottom: 9px;
+.card {
+	background-color: var(--bg-card);
+	border: 1px solid var(--border-color);
+	/* border-radius: 12px; */
+	border-radius: 0px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.pickerCell
-{
-	width: 60px;
-	float: left;
+.card-header {
+	background-color: rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid var(--border-color);
+	font-weight: 600;
+	border-radius: 0px;
 }
 
-.pickerCellLast
-{
-	width: 60px;
-	margin-left: 240px;
+.card-header:first-child {
+	border-radius: 0px;
 }
 
-.pixel
-{
-	background-image: url("transparent.png");
-	width: 44px;
-	height: 44px;
-	float: left;
-	border: 1px solid gray;
+/* Pixelated Canvas Styles */
+canvas {
+	image-rendering: optimizeSpeed;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: -o-crisp-edges;
+	image-rendering: pixelated;
+	-ms-interpolation-mode: nearest-neighbor;
+	/* border-radius: 4px; */
+	border-radius: 0px;
 }
 
-.pixelRowEnd
-{
-	background-image: url("transparent.png");
-	width: 44px;
-	height: 44px;	
-	margin-left: 184px;
-	border: 1px solid gray;
+#previewCanvas {
+	border-radius: 0px;
+}
+
+#previewContainer {
+	border: 1px solid var(--border-color);
+}
+
+.canvas-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #090a0f;
+	padding: 16px;
+	/* border-radius: 12px; */
+	border-radius: 0px;
+	border: 1px solid var(--border-color);
+	position: relative;
+	overflow: hidden;
+}
+
+/* Checkerboard patterns */
+.bg-checkerboard {
+	background-color: #303030;
+	background-image:
+		linear-gradient(45deg, #363636 25%, transparent 25%),
+		linear-gradient(-45deg, #363636 25%, transparent 25%),
+		linear-gradient(45deg, transparent 75%, #363636 75%),
+		linear-gradient(-45deg, transparent 75%, #363636 75%);
+	background-size: 16px 16px;
+	background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}
+
+.bg-dark-preview {
+	background-color: #111318 !important;
+}
+
+.bg-light-preview {
+	background-color: #ffffff !important;
+}
+
+/* Color Swatch & Palette Styles */
+.color-slot {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 10px;
+	/* border-radius: 8px; */
+	border-radius: 0px;
+	background-color: rgba(255, 255, 255, 0.05);
+	border: 2px solid transparent;
+	cursor: pointer;
+	transition: all 0.15s ease-in-out;
+	user-select: none;
+}
+
+.color-slot:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.color-slot.active {
+	border-color: #0d6efd;
+	background-color: rgba(13, 110, 253, 0.15);
+	box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
+}
+
+.color-picker-input {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	width: 28px;
+	height: 28px;
+	border: none;
+	/* border-radius: 6px; */
+	border-radius: 0px;
+	cursor: pointer;
+	padding: 0;
+	background: none;
+}
+
+.color-picker-input::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+
+.color-picker-input::-webkit-color-swatch {
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	/* border-radius: 6px; */
+	border-radius: 0px;
+}
+
+.color-symbol-badge {
+	font-family: 'Fira Code', monospace;
+	font-weight: 700;
+	font-size: 0.85rem;
+	min-width: 20px;
+	text-align: center;
+}
+
+/* Tools Styling */
+.tool-btn {
+	min-width: 42px;
+	height: 42px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	font-weight: 500;
+}
+
+.tool-btn.active {
+	background-color: #0d6efd !important;
+	color: white !important;
+	box-shadow: 0 0 12px rgba(13, 110, 253, 0.4);
+}
+
+/* Code Editor Textarea */
+.ps-code-box {
+	font-family: 'Fira Code', monospace;
+	font-size: 0.88rem;
+	background-color: #0d0f14;
+	color: #38edf8;
+	border: 1px solid var(--border-color);
+	/* border-radius: 8px; */
+	border-radius: 0px;
+	resize: vertical;
+	line-height: 1.4;
+}
+
+/* Live Toast */
+.toast-container {
+	z-index: 1090;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: #12151e;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #2e3446;
+	/* border-radius: 4px; */
+	border-radius: 0px;
 }
