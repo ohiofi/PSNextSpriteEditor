@@ -532,6 +532,60 @@
       renderAll();
     }
 
+    function growX() {
+      pushUndoState();
+      const newPixels = new Array(state.width * state.height ).fill(-1);
+      for (let y = 0; y < state.height; y++) {
+        for (let x = 0; x < state.width / 2; x++) {
+          const oldVal = state.pixels[x + y * state.width];
+          newPixels[x * 2 + 0 + y * state.width] = oldVal;
+          newPixels[x * 2 + 1 + y * state.width] = oldVal;
+        }
+      }
+      state.pixels = newPixels;
+      renderAll();
+    }
+
+    function growY() {
+      pushUndoState();
+      const newPixels = new Array(state.width * state.height ).fill(-1);
+      for (let y = 0; y < state.height / 2; y++) {
+        for (let x = 0; x < state.width; x++) {
+          const oldVal = state.pixels[x + y * state.width];
+          newPixels[x + (y * 2 + 0) * state.width] = oldVal;
+          newPixels[x + (y * 2 + 1) * state.width] = oldVal;
+        }
+      }
+      state.pixels = newPixels;
+      renderAll();
+    }
+
+    function shrinkX() {
+      pushUndoState();
+      const newPixels = new Array(state.width * state.height ).fill(-1);
+      for (let y = 0; y < state.height; y++) {
+        for (let x = 0; x < state.width; x+=2) {
+          const oldVal = state.pixels[x + y * state.width];
+          newPixels[parseInt(x / 2) + y * state.width] = oldVal;
+        }
+      }
+      state.pixels = newPixels;
+      renderAll();
+    }
+
+    function shrinkY() {
+      pushUndoState();
+      const newPixels = new Array(state.width * state.height ).fill(-1);
+      for (let y = 0; y < state.height; y+=2) {
+        for (let x = 0; x < state.width; x++) {
+          const oldVal = state.pixels[x + y * state.width];
+          newPixels[x + parseInt(y / 2) * state.width] = oldVal;
+        }
+      }
+      state.pixels = newPixels;
+      renderAll();
+    }
+
     /* Undo / Redo System */
     function pushUndoState() {
       state.redoStack = [];

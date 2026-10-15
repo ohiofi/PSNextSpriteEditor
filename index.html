@@ -65,7 +65,7 @@
 				</button>
 
 				<button class="btn btn-outline-primary btn-sm small-2" data-bs-toggle="modal" data-bs-target="#helpModal">
-					<i class="fa-solid fa-keyboard me-1"></i> Shortcuts
+					<i class="fa-solid fa-keyboard me-1"></i> Keys
 				</button>
 
 				<button class="btn btn-outline-primary btn-sm small-2" data-bs-toggle="modal" data-bs-target="#importModal">
@@ -135,21 +135,21 @@
 					<div class="card-body">
 						<div class="d-grid gap-2">
 							<div class="btn-group w-100" role="group">
-								<button class="btn btn-outline-secondary tool-btn active" id="toolPencil"
+								<button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil"
 									onclick="setTool('draw')" title="Draw Tool [P]">
 									<i class="fa-solid fa-pencil"></i> [D]raw
 								</button>
-								<button class="btn btn-outline-secondary tool-btn" id="toolEraser"
+								<button class="btn btn-outline-secondary tool-btn  w-50" id="toolEraser"
 									onclick="setTool('erase')" title="Erase Tool [E]">
 									<i class="fa-solid fa-eraser"></i> [E]rase
 								</button>
 							</div>
 							<div class="btn-group w-100" role="group">
-								<button class="btn btn-outline-secondary tool-btn" id="toolFill"
+								<button class="btn btn-outline-secondary tool-btn w-50" id="toolFill"
 									onclick="setTool('fill')" title="Fill Tool [F]">
 									<i class="fa-solid fa-fill-drip"></i> [F]ill
 								</button>
-								<button class="btn btn-outline-secondary tool-btn" id="toolEyedropper"
+								<button class="btn btn-outline-secondary tool-btn w-50" id="toolEyedropper"
 									onclick="setTool('pick')" title="Color Picker Tool [C]">
 									<i class="fa-solid fa-eye-dropper"></i> [P]ick
 								</button>
@@ -165,34 +165,53 @@
 					<div class="card-body">
 						<div class="row g-2 text-center">
 							<div class="col-3">
-								<button class="btn btn-outline-secondary btn-sm w-100" onclick="shiftGrid('up')"
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shiftGrid('up')"
 									title="Shift Up"><i class="fa-solid fa-arrow-up"></i></button>
 							</div>
 							<div class="col-3">
-								<button class="btn btn-outline-secondary btn-sm w-100" onclick="shiftGrid('down')"
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shiftGrid('down')"
 									title="Shift Down"><i class="fa-solid fa-arrow-down"></i></button>
 							</div>
 							<div class="col-3">
-								<button class="btn btn-outline-secondary btn-sm w-100" onclick="shiftGrid('left')"
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shiftGrid('left')"
 									title="Shift Left"><i class="fa-solid fa-arrow-left"></i></button>
 							</div>
 							<div class="col-3">
-								<button class="btn btn-outline-secondary btn-sm w-100" onclick="shiftGrid('right')"
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2 onclick="shiftGrid('right')"
 									title="Shift Right"><i class="fa-solid fa-arrow-right"></i></button>
 							</div>
+                            <div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="growX()"
+									title="Flip Horizontal"><i class="fa-solid fa-angles-right"></i> Grow
+									X</button>
+							</div>
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="growY()"
+									title="Flip Vertical"><i class="fa-solid fa-angles-down"></i> Grow Y</button>
+							</div>
+                            <div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shrinkX()"
+									title="Flip Horizontal"><i class="fa-solid fa-angles-left"></i> Shrink
+									X</button>
+							</div>
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shrinkY()"
+									title="Flip Vertical"><i class="fa-solid fa-angles-up"></i> Shrink Y</button>
+							</div>
 							<div class="col-4">
-								<button class="btn btn-outline-secondary btn-sm w-100" onclick="flipGrid('h')"
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="flipGrid('h')"
 									title="Flip Horizontal"><i class="fa-solid fa-arrows-left-right"></i> Flip
-									H</button>
+									X</button>
 							</div>
 							<div class="col-4">
-								<button class="btn btn-outline-secondary btn-sm w-100" onclick="flipGrid('v')"
-									title="Flip Vertical"><i class="fa-solid fa-arrows-up-down"></i> Flip V</button>
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="flipGrid('v')"
+									title="Flip Vertical"><i class="fa-solid fa-arrows-up-down"></i> Flip Y</button>
 							</div>
 							<div class="col-4">
-								<button class="btn btn-outline-secondary btn-sm w-100" onclick="rotate90()"
-									title="90 Rotate CW"><i class="fa-solid fa-rotate-right"></i> 90° Rotate</button>
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="rotate90()"
+									title="90 Rotate CW"><i class="fa-solid fa-rotate-right"></i> 90° Turn</button>
 							</div>
+                            
 						</div>
 					</div>
 				</div>
