@@ -154,8 +154,13 @@ canvas {
 
 .small-2{
 	font-size: 0.65rem;
-	padding: 0.2rem 0.2rem;
+	padding: 0.2rem 0.5rem;
 }
+
+ .input-group-sm>.form-select, .small-2 i {
+    font-size: 0.65rem;
+padding: 0rem 0.5rem;
+ }
 
 /* Tools Styling */
 .tool-btn {
