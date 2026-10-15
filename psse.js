@@ -198,7 +198,7 @@ function renderPaletteUI() {
     };
 
     slot.innerHTML = `
-          <span class="color-symbol-badge text-info">${symbol}</span>
+          <span class="color-symbol-badge text-secondary">${symbol}</span>
           <input type="color" class="color-picker-input" value="${colorHex}" onchange="updateColorHex(${idx}, this.value)">
           <span class="small font-monospace text-secondary">${colorHex.toUpperCase()}</span>
           <button class="btn btn-link btn-sm p-0 text-secondary ms-1 delete-btn" onclick="deleteColorSlot(${idx})" title="Delete Color">
