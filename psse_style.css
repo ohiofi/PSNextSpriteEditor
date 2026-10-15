@@ -115,9 +115,9 @@ canvas {
 }
 
 .color-slot.active {
-	border-color: #0d6efd;
-	background-color: rgba(13, 110, 253, 0.15);
-	box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
+	/* border-color: #0d6efd; */
+	background-color: rgba(255, 255, 255, 0.15);
+	box-shadow: 0 0 0px 1px rgba(255, 255, 255, 0.95);
 }
 
 .color-picker-input {
@@ -152,6 +152,11 @@ canvas {
 	text-align: center;
 }
 
+.small-2{
+	font-size: 0.7rem;
+	padding: 0.3rem 0.25rem;
+}
+
 /* Tools Styling */
 .tool-btn {
 	min-width: 42px;
@@ -164,9 +169,9 @@ canvas {
 }
 
 .tool-btn.active {
-	background-color: #0d6efd !important;
+	/* background-color: #0d6efd !important; */
 	color: white !important;
-	box-shadow: 0 0 12px rgba(13, 110, 253, 0.4);
+	box-shadow: 0 0 0px 1px rgba(255, 255, 255, 0.95);
 }
 
 /* Code Editor Textarea */
