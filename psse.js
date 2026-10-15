@@ -890,3 +890,250 @@
       const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
       toast.show();
     }
+
+	window.addEventListener('DOMContentLoaded', () => {
+      editorCanvas = document.getElementById('editorCanvas');
+      editorCtx = editorCanvas.getContext('2d');
+      previewCanvas = document.getElementById('previewCanvas');
+      previewCtx = previewCanvas.getContext('2d');
+
+      // Initialize default 5x5 pixels array
+      initPixelGrid(5, 5);
+
+      // Restore auto-saved session if available
+      loadAutoSave();
+
+      // Attach Canvas Event Listeners
+      editorCanvas.addEventListener('mousedown', handlePointerStart);
+      editorCanvas.addEventListener('mousemove', handlePointerMove);
+      window.addEventListener('mouseup', handlePointerEnd);
+
+      // Touch events for mobile responsiveness
+      editorCanvas.addEventListener('touchstart', handlePointerStart, { passive: false });
+      editorCanvas.addEventListener('touchmove', handlePointerMove, { passive: false });
+      window.addEventListener('touchend', handlePointerEnd);
+
+      // Mouse leave coordinate tracker reset
+      editorCanvas.addEventListener('mouseleave', () => {
+        document.getElementById('coordInfo').innerHTML = `<i class="fa-solid fa-location-crosshairs me-1"></i> X: - , Y: -`;
+      });
+
+      // Keyboard Shortcuts Listener
+      window.addEventListener('keydown', handleKeyDown);
+
+      // Initial Render & Dropdown Refresh
+      renderPaletteUI();
+      renderAll();
+      refreshSavedStatesDropdown();
+    });
+
+    /* PuzzleScript Code Output & Parser */
+    function updatePuzzleScriptOutput() {
+      const name = document.getElementById('spriteNameInput').value.trim() || 'SPRITE';
+      const colorsLine = state.palette.join(' ');
+
+      let gridLines = [];
+      for (let y = 0; y < state.height; y++) {
+        let rowStr = '';
+        for (let x = 0; x < state.width; x++) {
+          const colorIdx = state.pixels[x + y * state.width];
+          rowStr += getSymbolForIndex(colorIdx);
+        }
+        gridLines.push(rowStr);
+      }
+
+      const code = `${name}\n${colorsLine}\n${gridLines.join('\n')}`;
+      document.getElementById('psCodeOutput').value = code;
+
+      // Auto save current session state
+      autoSave();
+    }
+
+    /* Toast Helper */
+    function showToast(msg) {
+      document.getElementById('toastMessage').innerText = msg;
+      const toastEl = document.getElementById('liveToast');
+      const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+      toast.show();
+    }
+
+    /* LocalStorage Autosave & Snapshots System */
+    function getSerializedState() {
+      return {
+        name: document.getElementById('spriteNameInput').value.trim() || 'SPRITE',
+        width: state.width,
+        height: state.height,
+        palette: [...state.palette],
+        pixels: [...state.pixels],
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    function autoSave() {
+      try {
+        const data = getSerializedState();
+        localStorage.setItem('autosave', JSON.stringify(data));
+      } catch (err) {
+        console.warn('AutoSave failed:', err);
+      }
+    }
+
+    function loadAutoSave() {
+      try {
+        const raw = localStorage.getItem('autosave');
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (data.width && data.height && data.palette && data.pixels) {
+            state.width = data.width;
+            state.height = data.height;
+            state.palette = [...data.palette];
+            state.pixels = [...data.pixels];
+
+            if (document.getElementById('spriteNameInput') && data.name) {
+              document.getElementById('spriteNameInput').value = data.name;
+            }
+            if (document.getElementById('gridWidth')) {
+              document.getElementById('gridWidth').value = data.width;
+            }
+            if (document.getElementById('gridHeight')) {
+              document.getElementById('gridHeight').value = data.height;
+            }
+            if (document.getElementById('gridDimBadge')) {
+              document.getElementById('gridDimBadge').innerText = `${data.width} x ${data.height}`;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to restore autosave state:', err);
+      }
+    }
+
+    function saveCurrentStateManual() {
+      const spriteName = document.getElementById('spriteNameInput').value.trim() || 'SPRITE';
+      const now = new Date();
+      const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+      const keyName = `${spriteName} - ${dateStr}`;
+
+      try {
+        const data = getSerializedState();
+        data.savedAt = dateStr;
+        localStorage.setItem(keyName, JSON.stringify(data));
+
+        updateSavedKeysRegistry(keyName);
+        refreshSavedStatesDropdown();
+
+        // Auto select newly created save in dropdown
+        const select = document.getElementById('savedStatesSelect');
+        if (select) select.value = keyName;
+
+        showToast(`Saved state as "${keyName}"!`);
+      } catch (err) {
+        showToast('Failed to save state to localStorage.');
+      }
+    }
+
+    function getSavedKeys() {
+      try {
+        const raw = localStorage.getItem('psse_saved_keys');
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function updateSavedKeysRegistry(newKey) {
+      let keys = getSavedKeys();
+      if (!keys.includes(newKey)) {
+        keys.unshift(newKey);
+        localStorage.setItem('psse_saved_keys', JSON.stringify(keys));
+      }
+    }
+
+    function removeSavedKeyFromRegistry(key) {
+      let keys = getSavedKeys();
+      keys = keys.filter(k => k !== key);
+      localStorage.setItem('psse_saved_keys', JSON.stringify(keys));
+    }
+
+    function refreshSavedStatesDropdown() {
+      const select = document.getElementById('savedStatesSelect');
+      if (!select) return;
+
+      const currentSelection = select.value;
+      select.innerHTML = '<option value="" disabled selected>---LOAD---</option>';
+
+      if (localStorage.getItem('autosave')) {
+        const opt = document.createElement('option');
+        opt.value = 'autosave';
+        opt.innerText = 'Auto Save (Current Session)';
+        select.appendChild(opt);
+      }
+
+      const keys = getSavedKeys();
+      keys.forEach(key => {
+        if (localStorage.getItem(key)) {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.innerText = key;
+          select.appendChild(opt);
+        }
+      });
+
+      if (currentSelection && select.querySelector(`option[value="${CSS.escape(currentSelection)}"]`)) {
+        select.value = currentSelection;
+      }
+    }
+
+    function loadSelectedState(key) {
+      if (!key) return;
+
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) {
+          showToast('Selected saved state not found.');
+          return;
+        }
+
+        const data = JSON.parse(raw);
+        if (data.width && data.height && data.palette && data.pixels) {
+          pushUndoState();
+
+          state.width = data.width;
+          state.height = data.height;
+          state.palette = [...data.palette];
+          state.pixels = [...data.pixels];
+
+          document.getElementById('spriteNameInput').value = data.name || 'SPRITE';
+          document.getElementById('gridWidth').value = data.width;
+          document.getElementById('gridHeight').value = data.height;
+          document.getElementById('gridDimBadge').innerText = `${data.width} x ${data.height}`;
+
+          renderPaletteUI();
+          renderAll();
+          showToast(`Loaded saved state: ${key}`);
+        }
+      } catch (err) {
+        showToast('Error parsing saved state data.');
+      }
+    }
+
+    function deleteSelectedState() {
+      const select = document.getElementById('savedStatesSelect');
+      const key = select ? select.value : '';
+
+      if (!key) {
+        showToast('Please select a state to delete.');
+        return;
+      }
+
+      if (key === 'autosave') {
+        localStorage.removeItem('autosave');
+        showToast('Cleared Auto Save session.');
+      } else {
+        localStorage.removeItem(key);
+        removeSavedKeyFromRegistry(key);
+        showToast(`Deleted state snapshot.`);
+      }
+
+      refreshSavedStatesDropdown();
+    }
