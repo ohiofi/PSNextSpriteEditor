@@ -49,12 +49,12 @@
 
 				<!-- Undo / Redo Group -->
 				<div class="btn-group btn-group-sm" role="group">
-					<button class="btn btn-outline-secondary small-2" onclick="undo()" id="btnUndo" title="Undo (Ctrl+Z)"
-						disabled>
+					<button class="btn btn-outline-secondary small-2" onclick="undo()" id="btnUndo"
+						title="Undo (Ctrl+Z)" disabled>
 						<i class="fa-solid fa-rotate-left"></i> Undo
 					</button>
-					<button class="btn btn-outline-secondary small-2" onclick="redo()" id="btnRedo" title="Redo (Ctrl+Y)"
-						disabled>
+					<button class="btn btn-outline-secondary small-2" onclick="redo()" id="btnRedo"
+						title="Redo (Ctrl+Y)" disabled>
 						<i class="fa-solid fa-rotate-right"></i> Redo
 					</button>
 				</div>
@@ -64,11 +64,13 @@
 					<i class="fa-solid fa-file-circle-plus me-1"></i> New
 				</button>
 
-				<button class="btn btn-outline-primary btn-sm small-2" data-bs-toggle="modal" data-bs-target="#helpModal">
+				<button class="btn btn-outline-primary btn-sm small-2" data-bs-toggle="modal"
+					data-bs-target="#helpModal">
 					<i class="fa-solid fa-keyboard me-1"></i> Keys
 				</button>
 
-				<button class="btn btn-outline-primary btn-sm small-2" data-bs-toggle="modal" data-bs-target="#importModal">
+				<button class="btn btn-outline-primary btn-sm small-2" data-bs-toggle="modal"
+					data-bs-target="#importModal">
 					<i class="fa-solid fa-file-import me-1"></i> Import
 				</button>
 
@@ -169,18 +171,21 @@
 									title="Shift Up"><i class="fa-solid fa-arrow-up"></i></button>
 							</div>
 							<div class="col-3">
-								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shiftGrid('down')"
-									title="Shift Down"><i class="fa-solid fa-arrow-down"></i></button>
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2"
+									onclick="shiftGrid('down')" title="Shift Down"><i
+										class="fa-solid fa-arrow-down"></i></button>
 							</div>
 							<div class="col-3">
-								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shiftGrid('left')"
-									title="Shift Left"><i class="fa-solid fa-arrow-left"></i></button>
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2"
+									onclick="shiftGrid('left')" title="Shift Left"><i
+										class="fa-solid fa-arrow-left"></i></button>
 							</div>
 							<div class="col-3">
-								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shiftGrid('right')" 
-									title="Shift Right"><i class="fa-solid fa-arrow-right"></i></button>
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2"
+									onclick="shiftGrid('right')" title="Shift Right"><i
+										class="fa-solid fa-arrow-right"></i></button>
 							</div>
-                            <div class="col-3">
+							<div class="col-3">
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="growX()"
 									title="Flip Horizontal"><i class="fa-solid fa-angles-right"></i> Grow
 									X</button>
@@ -189,7 +194,7 @@
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="growY()"
 									title="Flip Vertical"><i class="fa-solid fa-angles-down"></i> Grow Y</button>
 							</div>
-                            <div class="col-3">
+							<div class="col-3">
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shrinkX()"
 									title="Flip Horizontal"><i class="fa-solid fa-angles-left"></i> Shrink
 									X</button>
@@ -211,7 +216,7 @@
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="rotate90()"
 									title="90 Rotate CW"><i class="fa-solid fa-rotate-right"></i> 90° Turn</button>
 							</div>
-                            
+
 						</div>
 					</div>
 				</div>
@@ -401,11 +406,16 @@
 						placeholder="PLAYER&#10;#ff0000 #00ff00 #0000ff&#10;.010.&#10;00100&#10;.010.&#10;.1.1.&#10;.1.1."></textarea>
 					<div id="importErrorAlert" class="alert alert-danger p-2 d-none"></div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary btn-sm" onclick="processImportCode()">Import &
-						Load</button>
-				</div>
+				<div class="modal-footer d-flex justify-content-between">
+    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+    <div class="d-flex align-items-center gap-2">
+        <input type="number" id="importScaleW" class="form-control form-control-sm bg-dark text-white border-secondary" style="width: 60px;" value="16" min="1" max="128" title="Width">
+        <span class="text-secondary">x</span>
+        <input type="number" id="importScaleH" class="form-control form-control-sm bg-dark text-white border-secondary" style="width: 60px;" value="16" min="1" max="128" title="Height">
+        <button type="button" class="btn btn-info btn-sm text-dark" onclick="importAndScale()">Import & Scale</button>
+        <button type="button" class="btn btn-primary btn-sm ms-2" onclick="importAsIs()">Import As-Is</button>
+    </div>
+</div>
 			</div>
 		</div>
 	</div>
