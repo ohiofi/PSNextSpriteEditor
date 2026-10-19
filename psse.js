@@ -751,8 +751,26 @@ function copyPuzzleScriptCode() {
   }
 }
 
-/* PuzzleScript Code Parser */
-function processImportCode() {
+function importAsIs() {
+  processImportCode(null, null); // Tells it to use original dimensions
+}
+
+function importAndScale() {
+  const wInput = document.getElementById('importScaleW').value;
+  const hInput = document.getElementById('importScaleH').value;
+  
+  const targetW = parseInt(wInput, 10);
+  const targetH = parseInt(hInput, 10);
+
+  if (isNaN(targetW) || isNaN(targetH) || targetW < 1 || targetW > 128 || targetH < 1 || targetH > 128) {
+    alert("Please enter valid dimensions (between 1 and 128).");
+    return;
+  }
+  
+  processImportCode(targetW, targetH);
+}
+
+function processImportCode(targetW, targetH) {
   const rawText = document.getElementById('importCodeArea').value.trim();
   const errorBox = document.getElementById('importErrorAlert');
   errorBox.classList.add('d-none');
@@ -789,7 +807,6 @@ function processImportCode() {
     }
 
     if (colorLineIdx === -1) {
-      // Assume line 0 is name, line 1 is colors
       colorLineIdx = 1;
       spriteName = lines[0];
     }
@@ -802,33 +819,43 @@ function processImportCode() {
       return '#' + tok; // fallback
     });
 
-    // Grid lines are remaining lines
     const gridLines = lines.slice(colorLineIdx + 1);
     if (gridLines.length === 0) throw new Error('No grid rows found.');
 
-    const h = gridLines.length;
-    const w = Math.max(...gridLines.map(l => l.length));
+    const origH = gridLines.length;
+    const origW = Math.max(...gridLines.map(l => l.length));
 
-    const newPixels = new Array(w * h).fill(-1);
+    // Determine final dimensions (use target if provided, else use original)
+    const newW = targetW !== null ? targetW : origW;
+    const newH = targetH !== null ? targetH : origH;
+    const newPixels = new Array(newW * newH).fill(-1);
 
-    for (let y = 0; y < h; y++) {
-      const line = gridLines[y];
-      for (let x = 0; x < line.length; x++) {
-        const char = line[x];
-        newPixels[x + y * w] = getIndexForSymbol(char);
+    // Nearest-Neighbor interpolation loop
+    for (let y = 0; y < newH; y++) {
+      for (let x = 0; x < newW; x++) {
+        // Map the new (x,y) back to the original (origX, origY) coordinates
+        const origX = Math.floor((x / newW) * origW);
+        const origY = Math.floor((y / newH) * origH);
+
+        const line = gridLines[origY];
+        // Safely get the character (if rows had uneven lengths, fallback to transparent '.')
+        const char = (origX < line.length) ? line[origX] : '.';
+        const colorIdx = getIndexForSymbol(char);
+
+        newPixels[x + y * newW] = colorIdx;
       }
     }
 
     state.palette = newPalette;
-    state.width = w;
-    state.height = h;
+    state.width = newW;
+    state.height = newH;
     state.pixels = newPixels;
     state.activeColorIndex = 0;
 
     document.getElementById('spriteNameInput').value = spriteName;
-    document.getElementById('gridWidth').value = w;
-    document.getElementById('gridHeight').value = h;
-    document.getElementById('gridDimBadge').innerText = `${w} x ${h}`;
+    document.getElementById('gridWidth').value = newW;
+    document.getElementById('gridHeight').value = newH;
+    document.getElementById('gridDimBadge').innerText = `${newW} x ${newH}`;
 
     renderPaletteUI();
     renderAll();
@@ -838,7 +865,8 @@ function processImportCode() {
     const modal = bootstrap.Modal.getInstance(modalEl);
     if (modal) modal.hide();
 
-    showToast('PuzzleScript code imported successfully!');
+    showToast(`Successfully imported at ${newW}x${newH}!`);
+    autoSave();
 
   } catch (err) {
     errorBox.innerText = 'Failed to parse PuzzleScript code: ' + err.message;
