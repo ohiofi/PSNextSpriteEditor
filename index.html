@@ -325,43 +325,43 @@
 			<!-- RIGHT COLUMN: Clean Icon Preview, PuzzleScript Output & Export -->
 			<div class="col-lg-3 col-md-12">
 
-				<!-- Clean Preview Card (Without Grid Lines) -->
-				<div class="card mb-3">
-					<div class="card-header d-flex justify-content-between align-items-center">
-						<span><i class="fa-solid fa-eye text-primary me-2"></i>Preview</span>
-						<span class="badge bg-dark border border-secondary" id="previewScaleBadge">4x Scale</span>
-					</div>
-					<div class="card-body text-center">
+				<!-- Clean Preview Card -->
+<div class="card mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span><i class="fa-solid fa-eye text-primary me-2"></i>Preview</span>
+    <span class="badge bg-dark border border-secondary" id="previewScaleBadge">4x Scale</span>
+  </div>
+  <div class="card-body text-center">
 
-						<!-- Preview Box -->
-						<div id="previewContainer"
-							class="p-3 mb-3 bg-checkerboard d-flex justify-content-center align-items-center"
-							style="min-height: 140px;">
-							<canvas id="previewCanvas"></canvas>
-						</div>
+    <!-- Preview Box -->
+    <div id="previewContainer"
+      class="p-3 mb-3 bg-checkerboard d-flex justify-content-center align-items-center"
+      style="min-height: 140px; max-height: 240px; overflow: auto;">
+      <canvas id="previewCanvas"></canvas>
+    </div>
 
-						<!-- Preview Mode Options -->
-						<div class="row g-2 align-items-center">
+    <!-- Simplified Controls: Scale Dropdown & Wallpaper Switch -->
+    <div class="d-flex align-items-center justify-content-between gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <label for="previewScaleSelect" class="form-label small text-secondary mb-0">Scale</label>
+        <select id="previewScaleSelect" class="form-select form-select-sm" style="width: 85px;" onchange="setPreviewScale(this.value)">
+          <option value="1">1x</option>
+          <option value="2">2x</option>
+          <option value="4" selected>4x</option>
+          <option value="8">8x</option>
+          <option value="16">16x</option>
+        </select>
+      </div>
 
-							<div class="col-12 mt-2">
-								<label class="form-label small text-secondary mb-1">Preview Scale</label>
-								<div class="btn-group w-100" role="group">
-									<button class="btn btn-outline-secondary btn-sm scaleBtn" id="scale1xBtn"
-										onclick="setPreviewScale(1)">1x</button>
-									<button class="btn btn-outline-secondary btn-sm scaleBtn" id="scale2xBtn"
-										onclick="setPreviewScale(2)">2x</button>
-									<button class="btn btn-outline-secondary btn-sm scaleBtn active" id="scale4xBtn"
-										onclick="setPreviewScale(4)">4x</button>
-									<button class="btn btn-outline-secondary btn-sm scaleBtn" id="scale8xBtn"
-										onclick="setPreviewScale(8)">8x</button>
-									<button class="btn btn-outline-secondary btn-sm scaleBtn" id="scale16xBtn"
-										onclick="setPreviewScale(16)">16x</button>
-								</div>
-							</div>
-						</div>
+      <!-- Wallpaper Switch -->
+      <div class="form-check form-switch mb-0 d-flex align-items-center gap-2">
+        <input class="form-check-input mt-0" type="checkbox" id="toggleWallpaper" onchange="toggleWallpaperMode(this.checked)">
+        <label class="form-check-label small text-secondary" for="toggleWallpaper">Wallpaper</label>
+      </div>
+    </div>
 
-					</div>
-				</div>
+  </div>
+</div>
 
 				<!-- PuzzleScript Sprite Code Output -->
 				<div class="card mb-3">
