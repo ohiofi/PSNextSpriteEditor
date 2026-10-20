@@ -176,7 +176,7 @@ function renderPaletteUI() {
 
   // 1. Transparent / Erase Option Button
   const eraseSlot = document.createElement('div');
-  eraseSlot.className = `color-slot ${state.activeColorIndex === -1 ? 'active' : ''}`;
+  eraseSlot.className = `palette-item ${state.activeColorIndex === -1 ? 'active' : ''}`;
   eraseSlot.onclick = () => selectColor(-1);
   eraseSlot.title = 'Erase / Transparent (.)';
   eraseSlot.innerHTML = `
@@ -189,7 +189,7 @@ function renderPaletteUI() {
   state.palette.forEach((colorHex, idx) => {
     const symbol = getSymbolForIndex(idx);
     const slot = document.createElement('div');
-    slot.className = `color-slot ${state.activeColorIndex === idx ? 'active' : ''}`;
+    slot.className = `palette-item ${state.activeColorIndex === idx ? 'active' : ''}`;
 
     slot.onclick = (e) => {
       if (!e.target.classList.contains('delete-btn') && !e.target.closest('.delete-btn') && e.target.tagName !== 'INPUT') {
