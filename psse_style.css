@@ -227,3 +227,31 @@ padding: 0rem 0.5rem;
 	/* border-radius: 4px; */
 	border-radius: 0px;
 }
+
+/* Unified Navbar Heights & Baseline Alignment */
+.navbar .btn,
+.navbar .form-select,
+.navbar .input-group-text {
+	font-size: 0.75rem !important;
+	height: 31px !important;
+	padding: 0.25rem 0.6rem !important;
+	display: inline-flex !important;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
+.navbar .input-group {
+	height: 31px;
+}
+
+.navbar .form-select {
+	background-position: right 0.4rem center;
+	padding-right: 1.5rem !important;
+}
+
+.navbar .vr {
+	height: 1.25rem !important;
+	align-self: center;
+	opacity: 0.3;
+}

@@ -1169,12 +1169,12 @@ function refreshSavedStatesDropdown() {
   if (!select) return;
 
   const currentSelection = select.value;
-  select.innerHTML = '<option value="" disabled selected>---LOAD---</option>';
+  select.innerHTML = '<option value="" disabled selected>-- load sprite --</option>';
 
   if (localStorage.getItem('autosave')) {
     const opt = document.createElement('option');
     opt.value = 'autosave';
-    opt.innerText = 'Auto Save (Current Session)';
+    opt.innerText = 'Auto Save';
     select.appendChild(opt);
   }
 

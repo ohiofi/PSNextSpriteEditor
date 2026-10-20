@@ -17,25 +17,26 @@
 
 <body class="" data-bs-theme="dark">
 
-<!-- Header Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary-subtle py-2">
-  <div class="container-fluid px-4">
-    <!-- Brand Title & Tool Navigation Group -->
-    <div class="d-flex align-items-center gap-3">
-      <span class="navbar-brand d-flex align-items-center gap-2 fw-bold mb-0 fs-5">
-        PuzzleScript Powertools
-      </span>
+	<!-- Header Navbar -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary-subtle py-2">
+		<div class="container-fluid px-4">
+			<!-- Brand Title & Tool Navigation Group -->
+			<div class="d-flex align-items-center gap-3">
+				<span class="navbar-brand d-flex align-items-center gap-2 fw-bold mb-0 fs-5">
+					PuzzleScript Powertools
+				</span>
 
-      <!-- Switcher Buttons -->
-      <div class="btn-group btn-group-sm" role="group" aria-label="Tool Navigation">
-        <a href="index.html" class="btn btn-primary text-light d-flex align-items-center gap-1">
-          <i class="fa-solid fa-puzzle-piece text-light"></i> Sprite Editor
-        </a>
-        <a href="mapeditor.html" class="btn btn-outline-secondary text-secondary d-flex align-items-center gap-1">
-          <i class="fa-solid fa-map text-secondary"></i> Map Editor
-        </a>
-      </div>
-    </div>
+				<!-- Switcher Buttons -->
+				<div class="btn-group btn-group-sm" role="group" aria-label="Tool Navigation">
+					<a href="index.html" class="btn btn-primary text-light d-flex align-items-center gap-1">
+						<i class="fa-solid fa-puzzle-piece text-light"></i> Sprite Editor
+					</a>
+					<a href="mapeditor.html"
+						class="btn btn-outline-secondary text-secondary d-flex align-items-center gap-1">
+						<i class="fa-solid fa-map text-secondary"></i> Map Editor
+					</a>
+				</div>
+			</div>
 
 			<!-- Unified Action Bar Container (Right Aligned) -->
 			<div class="d-flex align-items-center gap-2 ms-auto mt-2 mt-lg-0">
@@ -48,7 +49,7 @@
 					</button>
 					<select id="savedStatesSelect" class="form-select form-select-sm2"
 						onchange="loadSelectedState(this.value)">
-						<option value="" disabled selected>--- Load Save ---</option>
+						<option value="" disabled selected>-- load sprite --</option>
 					</select>
 					<button class="btn btn-outline-danger small-2" type="button" onclick="deleteSelectedState()"
 						title="Delete selected snapshot">
@@ -93,7 +94,7 @@
 
 
 	<!-- Main Container -->
-	<div class="container-fluid px-4">
+	<div class="container-fluid px-4 mt-3">
 		<div class="row g-4">
 
 			<!-- LEFT COLUMN: Grid Settings & Editing Tools -->
@@ -102,7 +103,7 @@
 				<!-- Grid Dimensions Card -->
 				<div class="card mb-3">
 					<div class="card-header d-flex justify-content-between align-items-center">
-						<span><i class="fa-solid fa-border-all text-primary me-2"></i>Grid Size</span>
+						<span><i class="fa-solid fa-border-all text-primary me-2"></i>Sprite Size</span>
 						<span class="badge bg-secondary small-2" id="gridDimBadge">5 x 5</span>
 					</div>
 					<div class="card-body">
@@ -145,7 +146,7 @@
 
 				<!-- Editing Tools Card -->
 				<div class="card mb-3">
-					<div class="card-header"><i class="fa-solid fa-wrench text-primary me-2"></i>Drawing Tools</div>
+					<div class="card-header"><i class="fa-solid fa-wrench text-primary me-2"></i>Tools</div>
 					<div class="card-body">
 						<div class="d-grid gap-2">
 							<div class="btn-group w-100" role="group">
@@ -175,7 +176,7 @@
 				<!-- Transformation Controls -->
 				<div class="card mb-3">
 					<div class="card-header"><i
-							class="fa-solid fa-arrows-up-down-left-right text-primary me-2"></i>Transformations</div>
+							class="fa-solid fa-arrows-up-down-left-right text-primary me-2"></i>Transform</div>
 					<div class="card-body">
 						<div class="row g-2 text-center">
 							<div class="col-3">
@@ -235,12 +236,12 @@
 
 				<!-- Preset Palettes Dropdown -->
 				<div class="card mb-3">
-					<div class="card-header"><i class="fa-solid fa-swatchbook text-primary me-2"></i>Preset Palettes
+					<div class="card-header"><i class="fa-solid fa-swatchbook text-primary me-2"></i>Presets
 					</div>
 					<div class="card-body">
 						<select id="palettePresets" class="form-select form-select-sm"
 							onchange="loadPalettePreset(this.value)">
-							<option value="" disabled selected>-- Choose Preset Palette --</option>
+							<option value="" disabled selected>-- choose preset color palette --</option>
 							<option value="ps_classic">PuzzleScript Classic (4 Colors)</option>
 							<option value="pico8">PICO-8 (16 Colors)</option>
 							<option value="gameboy">Game Boy DMG (4 Colors)</option>
@@ -260,7 +261,7 @@
 				<div class="card mb-3">
 					<div class="card-header d-flex justify-content-between align-items-center">
 						<span><i class="fa-solid fa-palette text-primary me-2"></i>Palette</span>
-						<button class="btn btn-success btn-sm fw-semibold" onclick="addColorSlot()">
+						<button class="btn btn-outline-primary btn-sm fw-semibold" onclick="addColorSlot()">
 							<i class="fa-solid fa-plus me-1"></i> Add Color
 						</button>
 					</div>
@@ -327,7 +328,7 @@
 				<!-- Clean Preview Card (Without Grid Lines) -->
 				<div class="card mb-3">
 					<div class="card-header d-flex justify-content-between align-items-center">
-						<span><i class="fa-solid fa-eye text-primary me-2"></i>Live Clean Icon Preview</span>
+						<span><i class="fa-solid fa-eye text-primary me-2"></i>Preview</span>
 						<span class="badge bg-dark border border-secondary" id="previewScaleBadge">4x Scale</span>
 					</div>
 					<div class="card-body text-center">
@@ -365,21 +366,23 @@
 				<!-- PuzzleScript Sprite Code Output -->
 				<div class="card mb-3">
 					<div class="card-header d-flex justify-content-between align-items-center">
-						<span><i class="fa-solid fa-code text-primary me-2"></i>PuzzleScript Code</span>
-
+						<span><i class="fa-solid fa-code text-primary me-2"></i>Export Code</span>
+						<button class="btn btn-outline-info btn-sm" onclick="copyPuzzleScriptCode()">
+							<i class="fa-solid fa-copy me-1"></i> Copy
+						</button>
 					</div>
 					<div class="card-body">
 
 
 						<textarea id="psCodeOutput" class="form-control ps-code-box p-2" rows="7" readonly></textarea>
 
-						<div class="mt-2">
+						<!-- <div class="mt-2">
 							<button class="btn btn-outline-info btn-sm w-100" onclick="copyPuzzleScriptCode()">
 
 								<i class="fa-solid fa-copy me-1"></i> Copy
 							</button>
-							</button>
-						</div>
+							
+						</div> -->
 					</div>
 				</div>
 
@@ -419,15 +422,21 @@
 					<div id="importErrorAlert" class="alert alert-danger p-2 d-none"></div>
 				</div>
 				<div class="modal-footer d-flex justify-content-between">
-    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-    <div class="d-flex align-items-center gap-2">
-        <input type="number" id="importScaleW" class="form-control form-control-sm bg-dark text-white border-secondary" style="width: 60px;" value="16" min="1" max="128" title="Width">
-        <span class="text-secondary">x</span>
-        <input type="number" id="importScaleH" class="form-control form-control-sm bg-dark text-white border-secondary" style="width: 60px;" value="16" min="1" max="128" title="Height">
-        <button type="button" class="btn btn-info btn-sm text-dark" onclick="importAndScale()">Import & Scale</button>
-        <button type="button" class="btn btn-primary btn-sm ms-2" onclick="importAsIs()">Import As-Is</button>
-    </div>
-</div>
+					<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+					<div class="d-flex align-items-center gap-2">
+						<input type="number" id="importScaleW"
+							class="form-control form-control-sm bg-dark text-white border-secondary"
+							style="width: 60px;" value="16" min="1" max="128" title="Width">
+						<span class="text-secondary">x</span>
+						<input type="number" id="importScaleH"
+							class="form-control form-control-sm bg-dark text-white border-secondary"
+							style="width: 60px;" value="16" min="1" max="128" title="Height">
+						<button type="button" class="btn btn-info btn-sm text-dark" onclick="importAndScale()">Import &
+							Scale</button>
+						<button type="button" class="btn btn-primary btn-sm ms-2" onclick="importAsIs()">Import
+							As-Is</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -512,8 +521,8 @@
 					class="text-info text-decoration-none"><i class="fa-brands fa-github me-1"></i>GitHub</a>
 			</p>
 			<p class="mb-0 small">
-				Designed for the <a href="https://puzzlescriptnext.polyomino.com/"
-					target="_blank" class="text-info text-decoration-none">PuzzleScript Next game engine</a> by Justin
+				Designed for the <a href="https://puzzlescriptnext.polyomino.com/" target="_blank"
+					class="text-info text-decoration-none">PuzzleScript Next game engine</a> by Justin
 				Riley, OhioFi
 			</p>
 		</div>

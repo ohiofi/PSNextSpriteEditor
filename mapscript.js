@@ -846,12 +846,12 @@ function refreshSavedMapStatesDropdown() {
   const select = document.getElementById('savedMapsSelect');
   if (!select) return;
 
-  select.innerHTML = '<option value="" disabled selected>--- Load Map ---</option>';
+  select.innerHTML = '<option value="" disabled selected>-- load map --</option>';
 
   if (localStorage.getItem('psme_autosave')) {
     const opt = document.createElement('option');
     opt.value = 'psme_autosave';
-    opt.innerText = '⚡ Auto Save (Current Session)';
+    opt.innerText = 'Auto Save';
     select.appendChild(opt);
   }
 
