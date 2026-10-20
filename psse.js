@@ -22,15 +22,15 @@ const PALETTE_PRESETS = {
   'pastel': ['#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff', '#e8baff']
 };
 
-/* Editor State */
 let state = {
   width: 5,
   height: 5,
-  palette: ['#000000', '#ff0000', '#00ff00', '#0000ff'], // 0-indexed colors
-  pixels: [], // Array of size width * height, containing color index (0,1,2...) or -1 for erase
-  activeTool: 'draw', // 'draw', 'erase', 'fill', 'pick'
-  activeColorIndex: 0, // -1 for erase, 0+ for palette colors
+  palette: ['#000000', '#ff0000', '#00ff00', '#0000ff'],
+  pixels: [],
+  activeTool: 'draw',
+  activeColorIndex: 0,
   previewScale: 4,
+  isWallpaper: false, // Repeats sprite in 3x3 pattern when enabled
   previewBG: 'checkerboard',
   undoStack: [],
   redoStack: []
@@ -150,20 +150,30 @@ function renderEditorCanvas() {
   }
 }
 
-/* Render Live Clean Preview Canvas (No Grid Lines) */
 function renderPreviewCanvas() {
   const scale = state.previewScale;
-  previewCanvas.width = state.width * scale;
-  previewCanvas.height = state.height * scale;
+  const isWallpaper = state.isWallpaper || false;
+  const tilesX = isWallpaper ? 3 : 1;
+  const tilesY = isWallpaper ? 3 : 1;
+
+  previewCanvas.width = state.width * scale * tilesX;
+  previewCanvas.height = state.height * scale * tilesY;
 
   previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
 
-  for (let y = 0; y < state.height; y++) {
-    for (let x = 0; x < state.width; x++) {
-      const colorIdx = state.pixels[x + y * state.width];
-      if (colorIdx >= 0 && colorIdx < state.palette.length) {
-        previewCtx.fillStyle = state.palette[colorIdx];
-        previewCtx.fillRect(x * scale, y * scale, scale, scale);
+  for (let ty = 0; ty < tilesY; ty++) {
+    for (let tx = 0; tx < tilesX; tx++) {
+      const offsetX = tx * state.width * scale;
+      const offsetY = ty * state.height * scale;
+
+      for (let y = 0; y < state.height; y++) {
+        for (let x = 0; x < state.width; x++) {
+          const colorIdx = state.pixels[x + y * state.width];
+          if (colorIdx >= 0 && colorIdx < state.palette.length) {
+            previewCtx.fillStyle = state.palette[colorIdx];
+            previewCtx.fillRect(offsetX + x * scale, offsetY + y * scale, scale, scale);
+          }
+        }
       }
     }
   }
@@ -700,11 +710,24 @@ function setPreviewBG(mode) {
 }
 
 function setPreviewScale(scale) {
-  state.previewScale = scale;
-  document.getElementById('previewScaleBadge').innerText = `${scale}x Scale`;
-  document.querySelectorAll('.scaleBtn').forEach(b => b.classList.remove('active'));
-  document.getElementById('scale' + scale + 'xBtn').classList.add('active');
+  state.previewScale = parseInt(scale, 10) || 4;
+  updatePreviewBadge();
   renderPreviewCanvas();
+  autoSave();
+}
+
+function toggleWallpaperMode(enabled) {
+  state.isWallpaper = !!enabled;
+  updatePreviewBadge();
+  renderPreviewCanvas();
+  autoSave();
+}
+
+function updatePreviewBadge() {
+  const badge = document.getElementById('previewScaleBadge');
+  if (badge) {
+    badge.innerText = `${state.previewScale}x ${state.isWallpaper ? 'Wallpaper' : 'Scale'}`;
+  }
 }
 
 /* PuzzleScript Code Output & Parser */
