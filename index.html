@@ -17,13 +17,25 @@
 
 <body class="" data-bs-theme="dark">
 
-	<!-- Header Navbar -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary-subtle py-2">
-		<div class="container-fluid px-4">
-			<!-- Brand / Title -->
-			<a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="#">
-				<i class="fa-solid fa-puzzle-piece text-primary fs-4"></i> PuzzleScript Next Sprite Editor
-			</a>
+<!-- Header Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary-subtle py-2">
+  <div class="container-fluid px-4">
+    <!-- Brand Title & Tool Navigation Group -->
+    <div class="d-flex align-items-center gap-3">
+      <span class="navbar-brand d-flex align-items-center gap-2 fw-bold mb-0 fs-5">
+        PuzzleScript Powertools
+      </span>
+
+      <!-- Switcher Buttons -->
+      <div class="btn-group btn-group-sm" role="group" aria-label="Tool Navigation">
+        <a href="index.html" class="btn btn-primary text-light d-flex align-items-center gap-1">
+          <i class="fa-solid fa-puzzle-piece text-light"></i> Sprite Editor
+        </a>
+        <a href="mapeditor.html" class="btn btn-outline-secondary text-secondary d-flex align-items-center gap-1">
+          <i class="fa-solid fa-map text-secondary"></i> Map Editor
+        </a>
+      </div>
+    </div>
 
 			<!-- Unified Action Bar Container (Right Aligned) -->
 			<div class="d-flex align-items-center gap-2 ms-auto mt-2 mt-lg-0">
@@ -247,7 +259,7 @@
 				<!-- Dynamic Palette Bar Card -->
 				<div class="card mb-3">
 					<div class="card-header d-flex justify-content-between align-items-center">
-						<span><i class="fa-solid fa-palette text-primary me-2"></i>Color Palette</span>
+						<span><i class="fa-solid fa-palette text-primary me-2"></i>Palette</span>
 						<button class="btn btn-success btn-sm fw-semibold" onclick="addColorSlot()">
 							<i class="fa-solid fa-plus me-1"></i> Add Color
 						</button>
@@ -500,7 +512,7 @@
 					class="text-info text-decoration-none"><i class="fa-brands fa-github me-1"></i>GitHub</a>
 			</p>
 			<p class="mb-0 small">
-				This version designed especially for the <a href="https://puzzlescriptnext.polyomino.com/"
+				Designed for the <a href="https://puzzlescriptnext.polyomino.com/"
 					target="_blank" class="text-info text-decoration-none">PuzzleScript Next game engine</a> by Justin
 				Riley, OhioFi
 			</p>
