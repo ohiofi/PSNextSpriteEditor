@@ -12,18 +12,18 @@ const PS_COLOR_NAMES = {
   'purple': '#800080', 'pink': '#ffc0cb', 'transparent': 'transparent'
 };
 
-/* Application State */
 let mapState = {
   width: 10,
   height: 10,
   grid: [],
   activeSymbol: '.',
   activeTool: 'draw',
+  brushSize: 2, 
   objects: {},
   legend: {},
   legendOrder: [],
-  zoom: 1.0,           // Added zoom factor (1.0 = 100%)
-  baseTileSize: 32,   // Base pixel dimensions per tile
+  zoom: 1.0,
+  baseTileSize: 32,
   undoStack: [],
   redoStack: []
 };
@@ -330,11 +330,20 @@ function selectLegendSymbol(symbolKey) {
   renderObjectsPaletteUI();
 }
 
+function updateMapBrushSize(val) {
+  const sz = parseInt(val, 10);
+  if (!isNaN(sz) && sz >= 1 && sz <= 32) {
+    mapState.brushSize = sz;
+    setMapTool('brush'); // Automatically activate brush tool
+  }
+}
+
 function setMapTool(toolName) {
   mapState.activeTool = toolName;
   document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
 
   if (toolName === 'draw') document.getElementById('toolPencil').classList.add('active');
+  if (toolName === 'brush') document.getElementById('toolBrush').classList.add('active');
   if (toolName === 'erase') {
     document.getElementById('toolEraser').classList.add('active');
     mapState.activeSymbol = '';
@@ -488,6 +497,21 @@ function handleMapPointerEnd() {
 function applyMapTool(x, y) {
   if (mapState.activeTool === 'draw') {
     mapState.grid[y][x] = mapState.activeSymbol || '.';
+  } else if (mapState.activeTool === 'brush') {
+    const size = mapState.brushSize || 2;
+    const startX = x - Math.floor((size - 1) / 2);
+    const startY = y - Math.floor((size - 1) / 2);
+    const symbolToPaint = mapState.activeSymbol || '.';
+
+    for (let dy = 0; dy < size; dy++) {
+      for (let dx = 0; dx < size; dx++) {
+        const px = startX + dx;
+        const py = startY + dy;
+        if (px >= 0 && px < mapState.width && py >= 0 && py < mapState.height) {
+          mapState.grid[py][px] = symbolToPaint;
+        }
+      }
+    }
   } else if (mapState.activeTool === 'erase') {
     mapState.grid[y][x] = '.';
   } else if (mapState.activeTool === 'pick') {
@@ -922,23 +946,74 @@ function deleteSelectedMapState() {
   refreshSavedMapStatesDropdown();
 }
 
-/* Keyboard Shortcuts */
+/* Keyboard Shortcuts Handler for Map Editor */
 function handleMapKeyDown(e) {
+  // Ignore keypresses when typing inside input or text area elements
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
+  // 1. Modifier Key Combinations (Ctrl / Cmd)
   if (e.ctrlKey || e.metaKey) {
     if (e.key === 'z' || e.key === 'Z') {
       e.preventDefault();
       if (e.shiftKey) redoMap(); else undoMap();
+      return;
     } else if (e.key === 'y' || e.key === 'Y') {
       e.preventDefault();
       redoMap();
+      return;
+    } else if (e.key === '+' || e.key === '=') {
+      e.preventDefault();
+      zoomMap(0.1);
+      return;
+    } else if (e.key === '-') {
+      e.preventDefault();
+      zoomMap(-0.1);
+      return;
+    } else if (e.key === '0') {
+      e.preventDefault();
+      autoFitMapZoom();
+      return;
     }
+  }
+
+  // 2. Arrow Keys for Translation / Panning
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    panMap('up');
+    return;
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    panMap('down');
+    return;
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    panMap('left');
+    return;
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    panMap('right');
     return;
   }
 
+  // 3. Direct Key Shortcuts for Zooming
+  if (e.key === '+' || e.key === '=') {
+    e.preventDefault();
+    zoomMap(0.1);
+    return;
+  } else if (e.key === '-' || e.key === '_') {
+    e.preventDefault();
+    zoomMap(-0.1);
+    return;
+  } else if (e.key === '0') {
+    e.preventDefault();
+    autoFitMapZoom();
+    return;
+  }
+
+  // 4. Painting Tool Shortcuts
   const key = e.key.toLowerCase();
   if (key === 'd') setMapTool('draw');
+  else if (key === 'b') setMapTool('brush');
   else if (key === 'e') setMapTool('erase');
   else if (key === 'f') setMapTool('fill');
   else if (key === 'p') setMapTool('pick');

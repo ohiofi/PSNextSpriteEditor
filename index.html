@@ -18,78 +18,71 @@
 <body class="" data-bs-theme="dark">
 
 	<!-- Header Navbar -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary-subtle py-2">
-		<div class="container-fluid px-4">
-			<!-- Brand Title & Tool Navigation Group -->
-			<div class="d-flex align-items-center gap-3">
-				<span class="navbar-brand d-flex align-items-center gap-2 fw-bold mb-0 fs-5">
-					PuzzleScript Powertools
-				</span>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary-subtle py-2">
+  <div class="container-fluid px-4">
 
-				<!-- Switcher Buttons -->
-				<div class="btn-group btn-group-sm" role="group" aria-label="Tool Navigation">
-					<a href="index.html" class="btn btn-primary text-light d-flex align-items-center gap-1">
-						<i class="fa-solid fa-puzzle-piece text-light"></i> Sprite Editor
-					</a>
-					<a href="mapeditor.html"
-						class="btn btn-outline-secondary text-secondary d-flex align-items-center gap-1">
-						<i class="fa-solid fa-map text-secondary"></i> Map Editor
-					</a>
-				</div>
-			</div>
+    <!-- Left: Brand Title & Tool Switcher -->
+    <div class="d-flex align-items-center gap-3">
+      <span class="navbar-brand d-flex align-items-center gap-2 fw-bold mb-0 fs-5">
+        PuzzleScript Powertools
+      </span>
 
-			<!-- Unified Action Bar Container (Right Aligned) -->
-			<div class="d-flex align-items-center gap-2 ms-auto mt-2 mt-lg-0">
+      <!-- Tool Switcher Buttons -->
+      <div class="btn-group btn-group-sm" role="group" aria-label="Tool Navigation">
+        <a href="index.html" class="btn btn-primary active text-light d-flex align-items-center gap-1">
+          <i class="fa-solid fa-puzzle-piece"></i> Sprite Editor
+        </a>
+        <a href="mapeditor.html" class="btn btn-outline-secondary text-secondary d-flex align-items-center gap-1">
+          <i class="fa-solid fa-map"></i> Map Editor
+        </a>
+      </div>
+    </div>
 
-				<!-- Save / Load Input Group -->
-				<div class="input-group input-group-sm" style="max-width: 280px;">
-					<button class="btn btn-outline-primary small-2" onclick="saveCurrentStateManual()"
-						title="Save current state to localStorage">
-						<i class="fa-solid fa-floppy-disk"></i>
-					</button>
-					<select id="savedStatesSelect" class="form-select form-select-sm2"
-						onchange="loadSelectedState(this.value)">
-						<option value="" disabled selected>-- load sprite --</option>
-					</select>
-					<button class="btn btn-outline-danger small-2" type="button" onclick="deleteSelectedState()"
-						title="Delete selected snapshot">
-						<i class="fa-solid fa-trash"></i>
-					</button>
-				</div>
+    <!-- Right: Unified Action Controls -->
+    <div class="d-flex align-items-center gap-2 ms-auto mt-2 mt-lg-0">
 
-				<!-- Vertical Visual Divider -->
-				<div class="vr bg-secondary d-none d-lg-block mx-1" style="height: 1.5rem; opacity: 0.3;"></div>
+      <!-- Save / Load Input Group -->
+      <div class="input-group input-group-sm" style="max-width: 260px;">
+        <button class="btn btn-outline-primary" onclick="saveCurrentStateManual()" title="Save current state to localStorage">
+          <i class="fa-solid fa-floppy-disk"></i>
+        </button>
+        <select id="savedStatesSelect" class="form-select" onchange="loadSelectedState(this.value)">
+          <option value="" disabled selected>-- load sprite --</option>
+        </select>
+        <button class="btn btn-outline-danger" type="button" onclick="deleteSelectedState()" title="Delete selected snapshot">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
 
-				<!-- Undo / Redo Group -->
-				<div class="btn-group btn-group-sm" role="group">
-					<button class="btn btn-outline-secondary small-2" onclick="undo()" id="btnUndo"
-						title="Undo (Ctrl+Z)" disabled>
-						<i class="fa-solid fa-rotate-left"></i> Undo
-					</button>
-					<button class="btn btn-outline-secondary small-2" onclick="redo()" id="btnRedo"
-						title="Redo (Ctrl+Y)" disabled>
-						<i class="fa-solid fa-rotate-right"></i> Redo
-					</button>
-				</div>
+      <!-- Vertical Divider -->
+      <div class="vr bg-secondary d-none d-lg-block mx-1"></div>
 
-				<!-- General Actions -->
-				<button class="btn btn-outline-primary btn-sm small-2" onclick="clearGrid()" title="Clear Grid">
-					<i class="fa-solid fa-file-circle-plus me-1"></i> New
-				</button>
+      <!-- Undo / Redo -->
+      <div class="btn-group btn-group-sm" role="group">
+        <button class="btn btn-outline-secondary" onclick="undo()" id="btnUndo" title="Undo (Ctrl+Z)" disabled>
+          <i class="fa-solid fa-rotate-left"></i> Undo
+        </button>
+        <button class="btn btn-outline-secondary" onclick="redo()" id="btnRedo" title="Redo (Ctrl+Y)" disabled>
+          <i class="fa-solid fa-rotate-right"></i> Redo
+        </button>
+      </div>
 
-				<button class="btn btn-outline-primary btn-sm small-2" data-bs-toggle="modal"
-					data-bs-target="#helpModal">
-					<i class="fa-solid fa-keyboard me-1"></i> Keys
-				</button>
+      <!-- Action Buttons -->
+      <button class="btn btn-outline-danger" onclick="clearGrid()" title="Clear Grid">
+        <i class="fa-solid fa-file-circle-plus me-1"></i> New
+      </button>
 
-				<button class="btn btn-outline-primary btn-sm small-2" data-bs-toggle="modal"
-					data-bs-target="#importModal">
-					<i class="fa-solid fa-file-import me-1"></i> Import
-				</button>
+      <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#helpModal" title="Keyboard Shortcuts">
+        <i class="fa-solid fa-keyboard me-1"></i> Keys
+      </button>
 
-			</div>
-		</div>
-	</nav>
+      <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#importModal" title="Import Sprite Code">
+        <i class="fa-solid fa-file-import me-1"></i> Import
+      </button>
+
+    </div>
+  </div>
+</nav>
 
 
 
@@ -145,33 +138,41 @@
 				</div>
 
 				<!-- Editing Tools Card -->
-				<div class="card mb-3">
-					<div class="card-header"><i class="fa-solid fa-wrench text-primary me-2"></i>Tools</div>
-					<div class="card-body">
-						<div class="d-grid gap-2">
-							<div class="btn-group w-100" role="group">
-								<button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil"
-									onclick="setTool('draw')" title="Draw Tool [P]">
-									<i class="fa-solid fa-pencil"></i> [D]raw
-								</button>
-								<button class="btn btn-outline-secondary tool-btn  w-50" id="toolEraser"
-									onclick="setTool('erase')" title="Erase Tool [E]">
-									<i class="fa-solid fa-eraser"></i> [E]rase
-								</button>
-							</div>
-							<div class="btn-group w-100" role="group">
-								<button class="btn btn-outline-secondary tool-btn w-50" id="toolFill"
-									onclick="setTool('fill')" title="Fill Tool [F]">
-									<i class="fa-solid fa-fill-drip"></i> [F]ill
-								</button>
-								<button class="btn btn-outline-secondary tool-btn w-50" id="toolEyedropper"
-									onclick="setTool('pick')" title="Color Picker Tool [C]">
-									<i class="fa-solid fa-eye-dropper"></i> [P]ick
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
+<div class="card mb-3">
+  <div class="card-header"><i class="fa-solid fa-wrench text-primary me-2"></i>Tools</div>
+  <div class="card-body">
+    <div class="d-grid gap-2">
+      <!-- Draw & Erase Row -->
+      <div class="btn-group w-100" role="group">
+        <button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil" onclick="setTool('draw')" title="Draw Tool [D]">
+          <i class="fa-solid fa-pencil"></i> [D]raw
+        </button>
+        <button class="btn btn-outline-secondary tool-btn w-50" id="toolEraser" onclick="setTool('erase')" title="Erase Tool [E]">
+          <i class="fa-solid fa-eraser"></i> [E]rase
+        </button>
+      </div>
+
+      <!-- Fill & Pick Row -->
+      <div class="btn-group w-100" role="group">
+        <button class="btn btn-outline-secondary tool-btn w-50" id="toolFill" onclick="setTool('fill')" title="Fill Tool [F]">
+          <i class="fa-solid fa-fill-drip"></i> [F]ill
+        </button>
+        <button class="btn btn-outline-secondary tool-btn w-50" id="toolEyedropper" onclick="setTool('pick')" title="Color Picker Tool [P]">
+          <i class="fa-solid fa-eye-dropper"></i> [P]ick
+        </button>
+      </div>
+
+      <!-- NEW: Brush Tool Row with Number Input -->
+      <div class="input-group w-100">
+        <button class="btn btn-outline-secondary tool-btn flex-grow-1" id="toolBrush" onclick="setTool('brush')" title="Brush Tool [B]">
+          <i class="fa-solid fa-paint-brush"></i> [B]rush
+        </button>
+        <input type="number" id="brushSizeInput" class="form-control bg-dark text-white border-secondary text-center fw-bold" style="max-width: 65px;" value="2" min="1" max="16" title="Brush Size" oninput="updateBrushSize(this.value)">
+      </div>
+
+    </div>
+  </div>
+</div>
 
 				<!-- Transformation Controls -->
 				<div class="card mb-3">
@@ -473,12 +474,16 @@
 									<td>Erase Tool</td>
 								</tr>
 								<tr>
-									<td><kbd>B</kbd></td>
-									<td>Bucket Tool</td>
+									<td><kbd>F</kbd></td>
+									<td>fill Tool</td>
 								</tr>
 								<tr>
-									<td><kbd>C</kbd></td>
+									<td><kbd>P</kbd></td>
 									<td>Color Picker Tool</td>
+								</tr>
+								<tr>
+									<td><kbd>B</kbd></td>
+									<td>Brush Tool</td>
 								</tr>
 								<tr>
 									<td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td>

@@ -29,8 +29,9 @@ let state = {
   pixels: [],
   activeTool: 'draw',
   activeColorIndex: 0,
+  brushSize: 2,
   previewScale: 4,
-  isWallpaper: false, // Repeats sprite in 3x3 pattern when enabled
+  isWallpaper: false,
   previewBG: 'checkerboard',
   undoStack: [],
   redoStack: []
@@ -304,12 +305,12 @@ function getIndexForSymbol(sym) {
   return SYMBOL_MAP.indexOf(sym);
 }
 
-/* Tool Switching */
 function setTool(toolName) {
   state.activeTool = toolName;
   document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
 
   if (toolName === 'draw') document.getElementById('toolPencil').classList.add('active');
+  if (toolName === 'brush') document.getElementById('toolBrush').classList.add('active');
   if (toolName === 'erase') {
     document.getElementById('toolEraser').classList.add('active');
     state.activeColorIndex = -1;
@@ -318,6 +319,14 @@ function setTool(toolName) {
   if (toolName === 'pick') document.getElementById('toolEyedropper').classList.add('active');
 
   renderPaletteUI();
+}
+
+function updateBrushSize(val) {
+  const sz = parseInt(val, 10);
+  if (!isNaN(sz) && sz >= 1 && sz <= 32) {
+    state.brushSize = sz;
+    setTool('brush'); // Automatically activate brush tool
+  }
 }
 
 /* Mouse / Touch Drawing Logic */
@@ -379,6 +388,20 @@ function applyTool(x, y) {
 
   if (state.activeTool === 'draw') {
     state.pixels[idx] = state.activeColorIndex;
+  } else if (state.activeTool === 'brush') {
+    const size = state.brushSize || 2;
+    const startX = x - Math.floor((size - 1) / 2);
+    const startY = y - Math.floor((size - 1) / 2);
+
+    for (let dy = 0; dy < size; dy++) {
+      for (let dx = 0; dx < size; dx++) {
+        const px = startX + dx;
+        const py = startY + dy;
+        if (px >= 0 && px < state.width && py >= 0 && py < state.height) {
+          state.pixels[px + py * state.width] = state.activeColorIndex;
+        }
+      }
+    }
   } else if (state.activeTool === 'erase') {
     state.pixels[idx] = -1;
   } else if (state.activeTool === 'pick') {
@@ -999,10 +1022,9 @@ function handleKeyDown(e) {
   } else if (key === 'e') {
     setTool('erase');
   } else if (key === 'd') {
-    if (state.activeTool === 'draw') {
-      selectColor('D');
-    }
     setTool('draw');
+  } else if (key === 'b') {
+    setTool('brush');
   } else if (key === 'f') {
     setTool('fill');
   } else if (key === 'p') {
