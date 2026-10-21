@@ -291,6 +291,14 @@ function renderEditorCanvas() {
       editorCtx.lineTo(editorCanvas.width, y * cellSize + 0.5);
       editorCtx.stroke();
     }
+    editorCtx.beginPath();
+    editorCtx.moveTo(editorCanvas.width - 0.5, 0);
+    editorCtx.lineTo(editorCanvas.width - 0.5, editorCanvas.height - 0.5);
+    editorCtx.stroke();
+    editorCtx.beginPath();
+    editorCtx.moveTo(0, editorCanvas.height - 0.5);
+    editorCtx.lineTo(editorCanvas.width - 0.5, editorCanvas.height - 0.5);
+    editorCtx.stroke();
   }
 }
 
@@ -1011,10 +1019,10 @@ function generateExportCode() {
   let frameNames = [];
 
   // --- 0. PRELUDE SECTION ---
-  let preludeCode = `animate_interval ${interval}`;
+  let preludeCode = `( IMPORTANT: animate_interval must only be added once )\nanimate_interval ${interval}`;
 
   // --- 1. OBJECTS SECTION ---
-  let objectsCode = `( Marker object to prevent multiple frame increments per tick )\nAnimated\ntransparent\n\n`;
+  let objectsCode = `( Animated is a marker to prevent multiple frames per clock tick )\n( IMPORTANT: the Animated object must only be added once )\nAnimated\ntransparent\n\n`;
 
   state.frames.forEach((framePixels, fIdx) => {
     const frameName = `${animName}_frame${fIdx}`;
@@ -1038,19 +1046,20 @@ function generateExportCode() {
   let legendCode = `( classify all frames as ${animName} )\n${animName} = ${frameNames.join(' or ')}\n\n( use ${mapChar} to add ${animName} to the map )\n${mapChar} = ${animName}_frame0`;
 
   // --- 3. COLLISIONLAYERS SECTION ---
-  let collisionCode = `Animated`;
+  let collisionCode = `( IMPORTANT: the Animated layer must only be added once )\nAnimated`;
 
   // --- 4. RULES SECTION ---
   let rulesCode = ``;
 
   if (isStationary) {
+    rulesCode += `( reset Animated )\n( IMPORTANT: the rest Animated rule should only be added once )\nlate [ Animated ] -> []\n\n`;
     rulesCode += `( ${animName} stationary animation cycle )\n`;
     if (frameCount > 1) {
       for (let i = 0; i < frameCount; i++) {
         const nextI = (i + 1) % frameCount;
         rulesCode += `[ ${animName}_frame${i} no Animated ] -> [ ${animName}_frame${nextI} Animated ]\n`;
       }
-      rulesCode += `\n( reset Animated )\nlate [ Animated ] -> []`;
+      
     } else {
       rulesCode += `( Single frame animation - no rules needed )`;
     }

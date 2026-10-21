@@ -234,8 +234,8 @@
           <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
             <div class="d-flex align-items-center gap-2">
               <i class="fa-solid fa-film text-primary"></i>
-              <div class="input-group input-group-sm" style="max-width: 220px;">
-                <span class="input-group-text bg-secondary border-secondary text-light small">Anim Name</span>
+              <div class="input-group input-group-sm" style="max-width: 300px;">
+                <span class="input-group-text bg-secondary border-secondary text-light small">Animated Sprite Name</span>
                 <input type="text" id="animNameInput" class="form-control" value="PLAYER_WALK" oninput="updateAnimName(this.value)">
               </div>
             </div>
@@ -411,12 +411,12 @@
           <div class="btn-group w-100" role="group">
             <input type="radio" class="btn-check" name="animType" id="typeStationary" value="stationary" checked onchange="generateExportCode()">
             <label class="btn btn-outline-primary" for="typeStationary">
-              <i class="fa-solid fa-sync me-1"></i> Stationary (In-place loop)
+              <i class="fa-solid fa-sync me-1"></i> Stationary (constant loop)
             </label>
 
-            <input type="radio" class="btn-check" name="animType" id="typeMoving" value="moving" onchange="generateExportCode()">
+            <input type="radio" class="btn-check" name="animType" id="typeMoving" value="moving" onchange="generateExportCode()" disabled>
             <label class="btn btn-outline-secondary" for="typeMoving">
-              <i class="fa-solid fa-person-walking me-1"></i> Moving
+              <i class="fa-solid fa-person-walking me-1"></i> Move States
             </label>
           </div>
         </div>
@@ -429,14 +429,14 @@
           <!-- 0. PRELUDE -->
           <div class="card mb-2 border-secondary">
             <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-              <span class="small fw-bold text-info"><i class="fa-solid fa-play-circle me-1"></i> PRELUDE (the section above OBJECTS)</span>
+              <span class="small fw-bold text-info"><i class="fa-solid fa-play-circle me-1"></i> PRELUDE (the untitled section above OBJECTS)</span>
               <button class="btn btn-outline-info btn-sm small-2" onclick="copyField('exportPreludeCode')">
                 <i class="fa-solid fa-copy me-1"></i> Copy
               </button>
             </div>
             <div class="card-body p-2">
-              NOTE: animate_interval only needs to be added once
-              <input type="text" id="exportPreludeCode" class="form-control ps-code-box p-2" readonly>
+              
+              <textarea id="exportPreludeCode" class="form-control ps-code-box p-2" rows="2" readonly></textarea>
             </div>
           </div>
 
@@ -449,7 +449,6 @@
               </button>
             </div>
             <div class="card-body p-2">
-                NOTE: the Animated object only needs to be added once
               <textarea id="exportObjectsCode" class="form-control ps-code-box p-2" rows="6" readonly></textarea>
             </div>
           </div>
@@ -476,9 +475,9 @@
               </button>
             </div>
             <div class="card-body p-2">
-                NOTE: the Animated layer only needs to be added once
                 
-              <input type="text" id="exportCollisionCode" class="form-control ps-code-box p-2" readonly>
+                
+              <textarea  id="exportCollisionCode" class="form-control ps-code-box p-2" rows="2" readonly></textarea>
             </div>
           </div>
 
@@ -491,7 +490,7 @@
               </button>
             </div>
             <div class="card-body p-2">
-                NOTE: the reset Animated rule only needs to be added once
+                
               <textarea id="exportRulesCode" class="form-control ps-code-box p-2" rows="5" readonly></textarea>
             </div>
           </div>
