@@ -137,44 +137,48 @@
 					</div>
 				</div>
 
-				<!-- Editing Tools Card -->
 <div class="card mb-3">
   <div class="card-header"><i class="fa-solid fa-wrench text-primary me-2"></i>Tools</div>
-  <div class="card-body">
+  <div class="card-body p-2 p-xl-3">
     <div class="d-grid gap-2">
       <!-- Draw & Erase Row -->
       <div class="btn-group w-100" role="group">
         <button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil" onclick="setTool('draw')" title="Draw Tool [D]">
-          <i class="fa-solid fa-pencil"></i> [D]raw
+          <i class="fa-solid fa-pencil"></i>
+          <span class="tool-label">[D]raw</span>
         </button>
         <button class="btn btn-outline-secondary tool-btn w-50" id="toolEraser" onclick="setTool('erase')" title="Erase Tool [E]">
-          <i class="fa-solid fa-eraser"></i> [E]rase
+          <i class="fa-solid fa-eraser"></i>
+          <span class="tool-label">[E]rase</span>
         </button>
       </div>
 
       <!-- Fill & Pick Row -->
       <div class="btn-group w-100" role="group">
         <button class="btn btn-outline-secondary tool-btn w-50" id="toolFill" onclick="setTool('fill')" title="Fill Tool [F]">
-          <i class="fa-solid fa-fill-drip"></i> [F]ill
+          <i class="fa-solid fa-fill-drip"></i>
+          <span class="tool-label">[F]ill</span>
         </button>
         <button class="btn btn-outline-secondary tool-btn w-50" id="toolEyedropper" onclick="setTool('pick')" title="Color Picker Tool [P]">
-          <i class="fa-solid fa-eye-dropper"></i> [P]ick
+          <i class="fa-solid fa-eye-dropper"></i>
+          <span class="tool-label">[P]ick</span>
         </button>
       </div>
 
-      <!-- NEW: Brush Tool Row with Number Input -->
+      <!-- Brush Tool Row with Number Input -->
       <div class="input-group w-100">
         <button class="btn btn-outline-secondary tool-btn flex-grow-1" id="toolBrush" onclick="setTool('brush')" title="Brush Tool [B]">
-          <i class="fa-solid fa-paint-brush"></i> [B]rush
+          <i class="fa-solid fa-paint-brush"></i>
+          <span class="tool-label">[B]rush</span>
         </button>
-        <input type="number" id="brushSizeInput" class="form-control bg-dark text-white border-secondary text-center fw-bold" style="max-width: 65px;" value="2" min="1" max="16" title="Brush Size" oninput="updateBrushSize(this.value)">
+        <input type="number" id="brushSizeInput" class="form-control bg-dark text-white border-secondary text-center fw-bold px-1" style="max-width: 55px;" value="2" min="1" max="16" title="Brush Size" oninput="updateBrushSize(this.value)">
       </div>
 
     </div>
   </div>
 </div>
 
-				<!-- Transformation Controls -->
+				<!-- Transform Controls -->
 				<div class="card mb-3">
 					<div class="card-header"><i
 							class="fa-solid fa-arrows-up-down-left-right text-primary me-2"></i>Transform</div>
@@ -201,34 +205,31 @@
 							</div>
 							<div class="col-3">
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="growX()"
-									title="Flip Horizontal"><i class="fa-solid fa-angles-right"></i> Grow
-									X</button>
+									title="Flip Horizontal"><i class="fa-solid fa-angles-right"></i> Grow</button>
 							</div>
 							<div class="col-3">
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="growY()"
-									title="Flip Vertical"><i class="fa-solid fa-angles-down"></i> Grow Y</button>
+									title="Flip Vertical"><i class="fa-solid fa-angles-down"></i> Grow</button>
 							</div>
 							<div class="col-3">
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shrinkX()"
-									title="Flip Horizontal"><i class="fa-solid fa-angles-left"></i> Shrink
-									X</button>
+									title="Flip Horizontal"><i class="fa-solid fa-angles-left"></i> Shrink</button>
 							</div>
 							<div class="col-3">
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shrinkY()"
-									title="Flip Vertical"><i class="fa-solid fa-angles-up"></i> Shrink Y</button>
+									title="Flip Vertical"><i class="fa-solid fa-angles-up"></i> Shrink</button>
 							</div>
 							<div class="col-4">
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="flipGrid('h')"
-									title="Flip Horizontal"><i class="fa-solid fa-arrows-left-right"></i> Flip
-									X</button>
+									title="Flip Horizontal"><i class="fa-solid fa-arrows-left-right"></i> Flip</button>
 							</div>
 							<div class="col-4">
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="flipGrid('v')"
-									title="Flip Vertical"><i class="fa-solid fa-arrows-up-down"></i> Flip Y</button>
+									title="Flip Vertical"><i class="fa-solid fa-arrows-up-down"></i> Flip</button>
 							</div>
 							<div class="col-4">
 								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="rotate90()"
-									title="90 Rotate CW"><i class="fa-solid fa-rotate-right"></i> 90° Turn</button>
+									title="90 Rotate CW"><i class="fa-solid fa-rotate-right"></i> Turn</button>
 							</div>
 
 						</div>
@@ -326,7 +327,7 @@
 			<!-- RIGHT COLUMN: Clean Icon Preview, PuzzleScript Output & Export -->
 			<div class="col-lg-3 col-md-12">
 
-				<!-- Clean Preview Card -->
+<!-- Clean Preview Card -->
 <div class="card mb-3">
   <div class="card-header d-flex justify-content-between align-items-center">
     <span><i class="fa-solid fa-eye text-primary me-2"></i>Preview</span>
@@ -342,10 +343,11 @@
     </div>
 
     <!-- Simplified Controls: Scale Dropdown & Wallpaper Switch -->
-    <div class="d-flex align-items-center justify-content-between gap-2">
-      <div class="d-flex align-items-center gap-2">
-        <label for="previewScaleSelect" class="form-label small text-secondary mb-0">Scale</label>
-        <select id="previewScaleSelect" class="form-select form-select-sm" style="width: 85px;" onchange="setPreviewScale(this.value)">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <!-- Scale Dropdown Group -->
+      <div class="d-flex align-items-center gap-1">
+        <label for="previewScaleSelect" class="form-label small text-secondary mb-0 me-1">Scale</label>
+        <select id="previewScaleSelect" class="form-select form-select-sm" style="width: 72px;" onchange="setPreviewScale(this.value)">
           <option value="1">1x</option>
           <option value="2">2x</option>
           <option value="4" selected>4x</option>
@@ -355,9 +357,9 @@
       </div>
 
       <!-- Wallpaper Switch -->
-      <div class="form-check form-switch mb-0 d-flex align-items-center gap-2">
-        <input class="form-check-input mt-0" type="checkbox" id="toggleWallpaper" onchange="toggleWallpaperMode(this.checked)">
-        <label class="form-check-label small text-secondary" for="toggleWallpaper">Wallpaper</label>
+      <div class="form-check form-switch mb-0 d-inline-flex align-items-center gap-1 ps-0">
+        <input class="form-check-input ms-0 mt-0" type="checkbox" id="toggleWallpaper" onchange="toggleWallpaperMode(this.checked)">
+        <label class="form-check-label small text-secondary text-nowrap" for="toggleWallpaper">Wallpaper</label>
       </div>
     </div>
 

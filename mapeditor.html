@@ -35,7 +35,7 @@
         <a href="index.html" class="btn btn-outline-secondary text-secondary d-flex align-items-center gap-1">
           <i class="fa-solid fa-puzzle-piece"></i> Sprite Editor
         </a>
-        <a href="mapeditor.html" class="btn btn-primary active text-light d-flex align-items-center gap-1">
+        <a href="mapeditor.html" class="btn btn-success active text-light d-flex align-items-center gap-1">
           <i class="fa-solid fa-map"></i> Map Editor
         </a>
       </div>
@@ -136,57 +136,105 @@
 
         <!-- Tools -->
 <div class="card mb-3">
-  <div class="card-header"><i class="fa-solid fa-paint-brush text-success me-2"></i>Painting Tools</div>
-  <div class="card-body">
+  <div class="card-header"><i class="fa-solid fa-paint-brush text-success me-2"></i>Tools</div>
+  <div class="card-body p-2 p-xl-3">
     <div class="d-grid gap-2">
       <!-- Draw & Erase Row -->
       <div class="btn-group w-100" role="group">
         <button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil" onclick="setMapTool('draw')" title="Paint Tile [D]">
-          <i class="fa-solid fa-pen"></i> [D]raw
+          <i class="fa-solid fa-pen"></i>
+          <span class="tool-label">[D]raw</span>
         </button>
         <button class="btn btn-outline-secondary tool-btn w-50" id="toolEraser" onclick="setMapTool('erase')" title="Erase Tile [E]">
-          <i class="fa-solid fa-eraser"></i> [E]rase
+          <i class="fa-solid fa-eraser"></i>
+          <span class="tool-label">[E]rase</span>
         </button>
       </div>
 
       <!-- Fill & Pick Row -->
       <div class="btn-group w-100" role="group">
         <button class="btn btn-outline-secondary tool-btn w-50" id="toolFill" onclick="setMapTool('fill')" title="Bucket Fill [F]">
-          <i class="fa-solid fa-fill-drip"></i> [F]ill
+          <i class="fa-solid fa-fill-drip"></i>
+          <span class="tool-label">[F]ill</span>
         </button>
         <button class="btn btn-outline-secondary tool-btn w-50" id="toolEyedropper" onclick="setMapTool('pick')" title="Pick Tile [P]">
-          <i class="fa-solid fa-eye-dropper"></i> [P]ick
+          <i class="fa-solid fa-eye-dropper"></i>
+          <span class="tool-label">[P]ick</span>
         </button>
       </div>
 
       <!-- Brush Tool Row with Number Input -->
       <div class="input-group w-100">
         <button class="btn btn-outline-secondary tool-btn flex-grow-1" id="toolBrush" onclick="setMapTool('brush')" title="Brush Tool [B]">
-          <i class="fa-solid fa-paint-brush"></i> [B]rush
+          <i class="fa-solid fa-paint-brush"></i>
+          <span class="tool-label">[B]rush</span>
         </button>
-        <input type="number" id="mapBrushSizeInput" class="form-control bg-dark text-white border-secondary text-center fw-bold" style="max-width: 65px;" value="2" min="1" max="16" title="Brush Size" oninput="updateMapBrushSize(this.value)">
+        <input type="number" id="mapBrushSizeInput" class="form-control bg-dark text-white border-secondary text-center fw-bold px-1" style="max-width: 55px;" value="2" min="1" max="16" title="Brush Size" oninput="updateMapBrushSize(this.value)">
       </div>
 
     </div>
   </div>
 </div>
 
-        <!-- Grid Lines Toggle -->
-        <div class="card mb-3">
-          <div class="card-header"><i class="fa-solid fa-sliders text-success me-2"></i> Options</div>
-          <div class="card-body">
-            <div class="form-check form-switch mb-2">
-              <input class="form-check-input" type="checkbox" id="toggleMapGrid" checked onchange="renderMapCanvas()">
-              <label class="form-check-label small text-secondary" for="toggleMapGrid">Show Grid Lines</label>
-            </div>
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" id="toggleAutoBackground" checked
-                onchange="renderMapCanvas()">
-              <label class="form-check-label small text-secondary" for="toggleAutoBackground">Render Default Background
-                under empty tiles</label>
-            </div>
-          </div>
-        </div>
+<!-- Transform Controls -->
+				<div class="card mb-3">
+					<div class="card-header"><i
+							class="fa-solid fa-arrows-up-down-left-right text-success me-2"></i>Transform</div>
+					<div class="card-body">
+						<div class="row g-2 text-center">
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shiftGrid('up')"
+									title="Shift Up"><i class="fa-solid fa-arrow-up"></i></button>
+							</div>
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2"
+									onclick="shiftGrid('down')" title="Shift Down"><i
+										class="fa-solid fa-arrow-down"></i></button>
+							</div>
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2"
+									onclick="shiftGrid('left')" title="Shift Left"><i
+										class="fa-solid fa-arrow-left"></i></button>
+							</div>
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2"
+									onclick="shiftGrid('right')" title="Shift Right"><i
+										class="fa-solid fa-arrow-right"></i></button>
+							</div>
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="growX()"
+									title="Flip Horizontal"><i class="fa-solid fa-angles-right"></i> Grow</button>
+							</div>
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="growY()"
+									title="Flip Vertical"><i class="fa-solid fa-angles-down"></i> Grow</button>
+							</div>
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shrinkX()"
+									title="Flip Horizontal"><i class="fa-solid fa-angles-left"></i> Shrink</button>
+							</div>
+							<div class="col-3">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="shrinkY()"
+									title="Flip Vertical"><i class="fa-solid fa-angles-up"></i> Shrink</button>
+							</div>
+							<div class="col-4">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="flipGrid('h')"
+									title="Flip Horizontal"><i class="fa-solid fa-arrows-left-right"></i> Flip</button>
+							</div>
+							<div class="col-4">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="flipGrid('v')"
+									title="Flip Vertical"><i class="fa-solid fa-arrows-up-down"></i> Flip</button>
+							</div>
+							<div class="col-4">
+								<button class="btn btn-outline-secondary btn-sm w-100 small-2" onclick="rotate90()"
+									title="90 Rotate CW"><i class="fa-solid fa-rotate-right"></i> Turn</button>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+
 
       </div>
 
@@ -297,6 +345,23 @@
             <button class="btn btn-outline-secondary btn-sm" onclick="exportMapPNG()">
               <i class="fa-solid fa-file-image me-1"></i> Export High-Res PNG
             </button>
+          </div>
+        </div>
+
+                <!-- Options -->
+        <div class="card mb-3">
+          <div class="card-header"><i class="fa-solid fa-sliders text-success me-2"></i> Options</div>
+          <div class="card-body">
+            <div class="form-check form-switch mb-2">
+              <input class="form-check-input" type="checkbox" id="toggleMapGrid" checked onchange="renderMapCanvas()">
+              <label class="form-check-label small text-secondary" for="toggleMapGrid">Show Grid Lines</label>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="toggleAutoBackground" checked
+                onchange="renderMapCanvas()">
+              <label class="form-check-label small text-secondary" for="toggleAutoBackground">Render Default Background
+                under empty tiles</label>
+            </div>
           </div>
         </div>
 

@@ -18,7 +18,7 @@ let mapState = {
   grid: [],
   activeSymbol: '.',
   activeTool: 'draw',
-  brushSize: 2, 
+  brushSize: 2,
   objects: {},
   legend: {},
   legendOrder: [],
@@ -414,6 +414,15 @@ function renderMapCanvas() {
       mapCtx.stroke();
     }
   }
+
+  mapCtx.beginPath();
+  mapCtx.moveTo(mapCanvas.width - 0.5, 0);
+  mapCtx.lineTo(mapCanvas.width - 0.5, mapCanvas.height - 0.5);
+  mapCtx.stroke();
+  mapCtx.beginPath();
+  mapCtx.moveTo(0, mapCanvas.height - 0.5);
+  mapCtx.lineTo(mapCanvas.width - 0.5, mapCanvas.height - 0.5);
+  mapCtx.stroke();
 
   updateZoomDisplay();
 }
@@ -1070,4 +1079,168 @@ function panMap(direction) {
   if (direction === 'right') wrapper.scrollBy({ left: step, behavior: 'smooth' });
   if (direction === 'up') wrapper.scrollBy({ top: -step, behavior: 'smooth' });
   if (direction === 'down') wrapper.scrollBy({ top: step, behavior: 'smooth' });
+}
+
+/* Map Transformation Actions */
+function shiftGrid(dir) {
+  pushMapUndoState();
+  const w = mapState.width;
+  const h = mapState.height;
+
+  if (dir === 'left') {
+    for (let y = 0; y < h; y++) {
+      const first = mapState.grid[y][0];
+      for (let x = 0; x < w - 1; x++) {
+        mapState.grid[y][x] = mapState.grid[y][x + 1];
+      }
+      mapState.grid[y][w - 1] = first;
+    }
+  } else if (dir === 'right') {
+    for (let y = 0; y < h; y++) {
+      const last = mapState.grid[y][w - 1];
+      for (let x = w - 1; x > 0; x--) {
+        mapState.grid[y][x] = mapState.grid[y][x - 1];
+      }
+      mapState.grid[y][0] = last;
+    }
+  } else if (dir === 'up') {
+    const topRow = mapState.grid[0];
+    for (let y = 0; y < h - 1; y++) {
+      mapState.grid[y] = mapState.grid[y + 1];
+    }
+    mapState.grid[h - 1] = topRow;
+  } else if (dir === 'down') {
+    const bottomRow = mapState.grid[h - 1];
+    for (let y = h - 1; y > 0; y--) {
+      mapState.grid[y] = mapState.grid[y - 1];
+    }
+    mapState.grid[0] = bottomRow;
+  }
+
+  renderMapCanvas();
+  updatePSLevelOutput();
+  autoSaveMap();
+}
+
+function flipGrid(dir) {
+  pushMapUndoState();
+  const h = mapState.height;
+
+  if (dir === 'h') {
+    for (let y = 0; y < h; y++) {
+      mapState.grid[y].reverse();
+    }
+  } else if (dir === 'v') {
+    mapState.grid.reverse();
+  }
+
+  renderMapCanvas();
+  updatePSLevelOutput();
+  autoSaveMap();
+}
+
+function rotate90() {
+  pushMapUndoState();
+  const oldW = mapState.width;
+  const oldH = mapState.height;
+  const newW = oldH;
+  const newH = oldW;
+
+  const newGrid = Array.from({ length: newH }, () => Array(newW).fill('.'));
+
+  for (let y = 0; y < oldH; y++) {
+    for (let x = 0; x < oldW; x++) {
+      const newX = oldH - 1 - y;
+      const newY = x;
+      newGrid[newY][newX] = mapState.grid[y][x];
+    }
+  }
+
+  mapState.width = newW;
+  mapState.height = newH;
+  mapState.grid = newGrid;
+
+  document.getElementById('mapWidth').value = newW;
+  document.getElementById('mapHeight').value = newH;
+  document.getElementById('mapDimBadge').innerText = `${newW} x ${newH}`;
+
+  renderMapCanvas();
+  updatePSLevelOutput();
+  autoSaveMap();
+}
+
+function growX() {
+  pushMapUndoState();
+  const w = mapState.width;
+  const h = mapState.height;
+
+  for (let y = 0; y < h; y++) {
+    const oldRow = [...mapState.grid[y]];
+    for (let x = 0; x < Math.floor(w / 2); x++) {
+      mapState.grid[y][x * 2] = oldRow[x];
+      mapState.grid[y][x * 2 + 1] = oldRow[x];
+    }
+  }
+
+  renderMapCanvas();
+  updatePSLevelOutput();
+  autoSaveMap();
+}
+
+function growY() {
+  pushMapUndoState();
+  const w = mapState.width;
+  const h = mapState.height;
+  const oldGrid = mapState.grid.map(row => [...row]);
+
+  for (let y = 0; y < Math.floor(h / 2); y++) {
+    for (let x = 0; x < w; x++) {
+      mapState.grid[y * 2][x] = oldGrid[y][x];
+      mapState.grid[y * 2 + 1][x] = oldGrid[y][x];
+    }
+  }
+
+  renderMapCanvas();
+  updatePSLevelOutput();
+  autoSaveMap();
+}
+
+function shrinkX() {
+  pushMapUndoState();
+  const w = mapState.width;
+  const h = mapState.height;
+
+  for (let y = 0; y < h; y++) {
+    const oldRow = [...mapState.grid[y]];
+    for (let x = 0; x < w; x += 2) {
+      mapState.grid[y][Math.floor(x / 2)] = oldRow[x];
+    }
+    for (let x = Math.ceil(w / 2); x < w; x++) {
+      mapState.grid[y][x] = '.';
+    }
+  }
+
+  renderMapCanvas();
+  updatePSLevelOutput();
+  autoSaveMap();
+}
+
+function shrinkY() {
+  pushMapUndoState();
+  const w = mapState.width;
+  const h = mapState.height;
+  const oldGrid = mapState.grid.map(row => [...row]);
+
+  for (let y = 0; y < h; y += 2) {
+    for (let x = 0; x < w; x++) {
+      mapState.grid[Math.floor(y / 2)][x] = oldGrid[y][x];
+    }
+  }
+  for (let y = Math.ceil(h / 2); y < h; y++) {
+    mapState.grid[y].fill('.');
+  }
+
+  renderMapCanvas();
+  updatePSLevelOutput();
+  autoSaveMap();
 }
