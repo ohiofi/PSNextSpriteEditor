@@ -1019,10 +1019,10 @@ function generateExportCode() {
   let frameNames = [];
 
   // --- 0. PRELUDE SECTION ---
-  let preludeCode = `( IMPORTANT: animate_interval must only be added once )\nanimate_interval ${interval}`;
+  let preludeCode = `( IMPORTANT: animate_interval must only be added once )<br>animate_interval ${interval}`;
 
   // --- 1. OBJECTS SECTION ---
-  let objectsCode = `( Animated is a marker to prevent multiple frames per clock tick )\n( IMPORTANT: the Animated object must only be added once )\nAnimated\ntransparent\n\n`;
+  let objectsCode = ``;
 
   state.frames.forEach((framePixels, fIdx) => {
     const frameName = `${animName}_frame${fIdx}`;
@@ -1046,13 +1046,13 @@ function generateExportCode() {
   let legendCode = `( classify all frames as ${animName} )\n${animName} = ${frameNames.join(' or ')}\n\n( use ${mapChar} to add ${animName} to the map )\n${mapChar} = ${animName}_frame0`;
 
   // --- 3. COLLISIONLAYERS SECTION ---
-  let collisionCode = `( IMPORTANT: the Animated layer must only be added once )\nAnimated`;
+  //let collisionCode = `( IMPORTANT: the Animated layer must only be added once )\nAnimated`;
 
   // --- 4. RULES SECTION ---
   let rulesCode = ``;
 
   if (isStationary) {
-    rulesCode += `( reset Animated )\n( IMPORTANT: the rest Animated rule should only be added once )\nlate [ Animated ] -> []\n\n`;
+    rulesCode += ``;
     rulesCode += `( ${animName} stationary animation cycle )\n`;
     if (frameCount > 1) {
       for (let i = 0; i < frameCount; i++) {
@@ -1068,10 +1068,10 @@ function generateExportCode() {
   }
 
   // Populate Modal Text Fields
-  if (document.getElementById('exportPreludeCode')) document.getElementById('exportPreludeCode').value = preludeCode;
+  if (document.getElementById('exportPreludeCode')) document.getElementById('exportPreludeCode').innerHTML = preludeCode;
   if (document.getElementById('exportObjectsCode')) document.getElementById('exportObjectsCode').value = objectsCode.trim();
   if (document.getElementById('exportLegendCode')) document.getElementById('exportLegendCode').value = legendCode;
-  if (document.getElementById('exportCollisionCode')) document.getElementById('exportCollisionCode').value = collisionCode;
+  //if (document.getElementById('exportCollisionCode')) document.getElementById('exportCollisionCode').value = collisionCode;
   if (document.getElementById('exportRulesCode')) document.getElementById('exportRulesCode').value = rulesCode;
 }
 
