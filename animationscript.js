@@ -1019,10 +1019,10 @@ function generateExportCode() {
   let frameNames = [];
 
   // --- 0. PRELUDE SECTION ---
-  let preludeCode = `( IMPORTANT: animate_interval must only be added once )<br>animate_interval ${interval}`;
+  let preludeCode = `realtime_interval ${interval}`;
 
   // --- 1. OBJECTS SECTION ---
-  let objectsCode = ``;
+  let objectsCode = `( marker to prevent multiple frames per clock tick )\n${animName}_hasAnimated\ntransparent\n\n`;
 
   state.frames.forEach((framePixels, fIdx) => {
     const frameName = `${animName}_frame${fIdx}`;
@@ -1043,21 +1043,21 @@ function generateExportCode() {
 
   // --- 2. LEGEND SECTION ---
   const mapChar = animName.charAt(0).toUpperCase() || 'N';
-  let legendCode = `( classify all frames as ${animName} )\n${animName} = ${frameNames.join(' or ')}\n\n( use ${mapChar} to add ${animName} to the map )\n${mapChar} = ${animName}_frame0`;
+  let legendCode = `( classify all frames as ${animName} )\n${animName} = ${frameNames.join(' or ')}\n\n( use ${mapChar} to add ${animName} to map )\n${mapChar} = ${animName}_frame0`;
 
   // --- 3. COLLISIONLAYERS SECTION ---
-  //let collisionCode = `( IMPORTANT: the Animated layer must only be added once )\nAnimated`;
+  let collisionCode = `${animName}_hasAnimated ( should be its own separate layer )`;
 
   // --- 4. RULES SECTION ---
   let rulesCode = ``;
 
   if (isStationary) {
     rulesCode += ``;
-    rulesCode += `( ${animName} stationary animation cycle )\n`;
+    rulesCode += `( ${animName} stationary object animation cycle )\n( stays constant whether player moves or not )\nlate [ ${animName}_hasAnimated ] -> []\n`;
     if (frameCount > 1) {
       for (let i = 0; i < frameCount; i++) {
         const nextI = (i + 1) % frameCount;
-        rulesCode += `[ ${animName}_frame${i} no Animated ] -> [ ${animName}_frame${nextI} Animated ]\n`;
+        rulesCode += `[ stationary Player ] [ ${animName}_frame${i} no ${animName}_hasAnimated ] -> [ Player ] [ ${animName}_frame${nextI} ${animName}_hasAnimated ]\n`;
       }
       
     } else {
@@ -1071,7 +1071,7 @@ function generateExportCode() {
   if (document.getElementById('exportPreludeCode')) document.getElementById('exportPreludeCode').innerHTML = preludeCode;
   if (document.getElementById('exportObjectsCode')) document.getElementById('exportObjectsCode').value = objectsCode.trim();
   if (document.getElementById('exportLegendCode')) document.getElementById('exportLegendCode').value = legendCode;
-  //if (document.getElementById('exportCollisionCode')) document.getElementById('exportCollisionCode').value = collisionCode;
+  if (document.getElementById('exportCollisionLayersCode')) document.getElementById('exportCollisionLayersCode').value = collisionCode;
   if (document.getElementById('exportRulesCode')) document.getElementById('exportRulesCode').value = rulesCode;
 }
 
