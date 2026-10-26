@@ -426,116 +426,144 @@
   </div>
 
 
+
   <!-- MODAL: Export PuzzleScript Animation Code -->
-  <div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content card">
-        <div class="modal-header card-header">
-          <h5 class="modal-title"><i class="fa-solid fa-file-export text-primary me-2"></i>Export PuzzleScript Animation
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content card">
+      <div class="modal-header card-header">
+        <h5 class="modal-title"><i class="fa-solid fa-file-export text-primary me-2"></i>Export PuzzleScript Animation</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Movement Type Selection -->
+        <div class="mb-3">
+          <label class="form-label fw-bold text-light mb-2">Sprite Type</label>
+          <div class="btn-group w-100" role="group">
+            <input type="radio" class="btn-check" name="animType" id="typeStationary" value="stationary" checked onchange="generateExportCode()">
+            <label class="btn btn-outline-primary" for="typeStationary">
+              <i class="fa-solid fa-sync me-1"></i> Stationary
+            </label>
+
+            <input type="radio" class="btn-check" name="animType" id="typeProjectile" value="projectile" onchange="generateExportCode()">
+            <label class="btn btn-outline-primary" for="typeProjectile">
+              <i class="fa-solid fa-rocket me-1"></i> Projectile
+            </label>
+
+            <input type="radio" class="btn-check" name="animType" id="typeMoving" value="moving" onchange="generateExportCode()" disabled>
+            <label class="btn btn-outline-secondary" for="typeMoving">
+              <i class="fa-solid fa-person-walking me-1"></i> More To Come?
+            </label>
+          </div>
         </div>
-        <div class="modal-body">
 
-          <!-- Movement Type Selection -->
-          <div class="mb-3">
-            <label class="form-label fw-bold text-light mb-2">Sprite Movement Type</label>
-            <div class="btn-group w-100" role="group">
-              <input type="radio" class="btn-check" name="animType" id="typeStationary" value="stationary" checked
-                onchange="generateExportCode()">
-              <label class="btn btn-outline-primary" for="typeStationary">
-                <i class="fa-solid fa-sync me-1"></i> Stationary
-              </label>
+        <!-- Projectile Directions Checkboxes -->
+        <div id="projectileDirectionsGroup" class="mb-3 d-none">
+          <label class="form-label fw-bold text-light mb-2">Generate Directions</label>
+          <div class="d-flex flex-wrap gap-3 bg-dark p-2 rounded border border-secondary">
+            <div class="form-check form-check-inline mb-0">
+              <input class="form-check-input" type="checkbox" id="dirRight" value="right" checked onchange="generateExportCode()">
+              <label class="form-check-label text-light small fw-bold" for="dirRight">Right</label>
+            </div>
+            <div class="form-check form-check-inline mb-0">
+              <input class="form-check-input" type="checkbox" id="dirLeft" value="left" onchange="generateExportCode()">
+              <label class="form-check-label text-light small fw-bold" for="dirLeft">Left</label>
+            </div>
+            <div class="form-check form-check-inline mb-0">
+              <input class="form-check-input" type="checkbox" id="dirUp" value="up" onchange="generateExportCode()">
+              <label class="form-check-label text-light small fw-bold" for="dirUp">Up</label>
+            </div>
+            <div class="form-check form-check-inline mb-0">
+              <input class="form-check-input" type="checkbox" id="dirDown" value="down" onchange="generateExportCode()">
+              <label class="form-check-label text-light small fw-bold" for="dirDown">Down</label>
+            </div>
+          </div>
+        </div>
 
-              <input type="radio" class="btn-check" name="animType" id="typeMoving" value="moving"
-                onchange="generateExportCode()" disabled>
-              <label class="btn btn-outline-secondary" for="typeMoving">
-                <i class="fa-solid fa-person-walking me-1"></i> More To Come?
-              </label>
+        <hr class="border-secondary opacity-25">
+
+        <div class="mb-2 small" id="spriteTypeDescription">
+          These settings work well for "Stationary" objects that either don't move at all or only move when pushed by the player
+        </div>
+
+        <!-- Output Sections Accordion -->
+        <div class="accordion" id="exportAccordion">
+
+          <!-- 0. PRELUDE -->
+          <div class="card mb-2 border-secondary">
+            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+              <span class="small fw-bold text-info"><i class="fa-solid fa-play-circle me-1"></i> PRELUDE (the3 untitled section above OBJECTS)</span>
+              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportPreludeCode')">
+                <i class="fa-solid fa-copy me-1"></i> Copy
+              </button>
+            </div>
+            <div class="card-body p-2">
+              <textarea id="exportPreludeCode" class="form-control ps-code-box p-2" rows="3" readonly></textarea>
             </div>
           </div>
 
-          <hr class="border-secondary opacity-25">
-
-          <!-- Output Sections -->
-          <div class="accordion" id="exportAccordion">
-
-            <!-- 0. PRELUDE -->
-            <div class="card mb-2 border-secondary">
-              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                <span class="small fw-bold text-info"><i class="fa-solid fa-play-circle me-1"></i> PRELUDE (the untitled
-                  section above OBJECTS)</span>
-
-              </div>
-              <div class="card-body p-2">
-
-                <div id="exportPreludeCode" class="p-2"></div>
-              </div>
+          <!-- 1. OBJECTS -->
+          <div class="card mb-2 border-secondary">
+            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+              <span class="small fw-bold text-info"><i class="fa-solid fa-cubes me-1"></i> OBJECTS</span>
+              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportObjectsCode')">
+                <i class="fa-solid fa-copy me-1"></i> Copy
+              </button>
             </div>
-
-            <!-- 1. OBJECTS -->
-            <div class="card mb-2 border-secondary">
-              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                <span class="small fw-bold text-info"><i class="fa-solid fa-cubes me-1"></i> OBJECTS</span>
-                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end"
-                  onclick="copyField('exportObjectsCode')">
-                  <i class="fa-solid fa-copy me-1"></i> Copy
-                </button>
-              </div>
-              <div class="card-body p-2">
-                <textarea id="exportObjectsCode" class="form-control ps-code-box p-2" rows="6" readonly></textarea>
-                
-              </div>
+            <div class="card-body p-2">
+              <textarea id="exportObjectsCode" class="form-control ps-code-box p-2" rows="6" readonly></textarea>
             </div>
+          </div>
 
-            <!-- 2. LEGEND -->
-            <div class="card mb-2 border-secondary">
-              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                <span class="small fw-bold text-info"><i class="fa-solid fa-list me-1"></i> LEGEND</span>
-                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportLegendCode')">
-                  <i class="fa-solid fa-copy me-1"></i> Copy
-                </button>
-              </div>
-              <div class="card-body p-2">
-                <textarea id="exportLegendCode" class="form-control ps-code-box p-2" rows="4" readonly></textarea>
-              </div>
+          <!-- 2. LEGEND -->
+          <div class="card mb-2 border-secondary">
+            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+              <span class="small fw-bold text-info"><i class="fa-solid fa-list me-1"></i> LEGEND</span>
+              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportLegendCode')">
+                <i class="fa-solid fa-copy me-1"></i> Copy
+              </button>
             </div>
-
-            <!-- 3. COLLISIONLAYERS -->
-            <div class="card mb-2 border-secondary">
-              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                <span class="small fw-bold text-info"><i class="fa-solid fa-layer-group me-1"></i> COLLISIONLAYERS</span>
-                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportCollisionLayersCode')">
-                  <i class="fa-solid fa-copy me-1"></i> Copy
-                </button>
-              </div>
-              <div class="card-body p-2">
-                <textarea id="exportCollisionLayersCode" class="form-control ps-code-box p-2" rows="1" readonly></textarea>
-              </div>
+            <div class="card-body p-2">
+              <textarea id="exportLegendCode" class="form-control ps-code-box p-2" rows="5" readonly></textarea>
             </div>
+          </div>
 
-            <!-- 4. RULES -->
-            <div class="card border-secondary">
-              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                <span class="small fw-bold text-info"><i class="fa-solid fa-gears me-1"></i> RULES</span>
-                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportRulesCode')">
-                  <i class="fa-solid fa-copy me-1"></i> Copy
-                </button>
-              </div>
-              <div class="card-body p-2">
-                <textarea id="exportRulesCode" class="form-control ps-code-box p-2" rows="5" readonly></textarea>
-              </div>
+          <!-- 3. COLLISIONLAYERS -->
+          <div class="card mb-2 border-secondary">
+            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+              <span class="small fw-bold text-info"><i class="fa-solid fa-layer-group me-1"></i> COLLISIONLAYERS</span>
+              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportCollisionLayersCode')">
+                <i class="fa-solid fa-copy me-1"></i> Copy
+              </button>
             </div>
+            <div class="card-body p-2">
+              <textarea id="exportCollisionLayersCode" class="form-control ps-code-box p-2" rows="1" readonly></textarea>
+            </div>
+          </div>
 
+          <!-- 4. RULES -->
+          <div class="card border-secondary">
+            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+              <span class="small fw-bold text-info"><i class="fa-solid fa-gears me-1"></i> RULES</span>
+              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportRulesCode')">
+                <i class="fa-solid fa-copy me-1"></i> Copy
+              </button>
+            </div>
+            <div class="card-body p-2">
+              <textarea id="exportRulesCode" class="form-control ps-code-box p-2" rows="8" readonly></textarea>
+            </div>
           </div>
 
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
+</div>
 
 
 
