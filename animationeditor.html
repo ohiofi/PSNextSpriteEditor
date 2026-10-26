@@ -80,32 +80,73 @@
     <div class="row g-4">
 
       <!-- LEFT COLUMN: Grid Settings & Editing Tools -->
-      <div class="col-lg-3 col-md-4">
+      <div id="leftColumn" class="col-lg-4 col-md-4">
 
-        <!-- Dimensions Card -->
-        <div class="card mb-3">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="fa-solid fa-border-all text-primary me-2"></i>Frame Dimensions</span>
-            <span class="badge bg-secondary small-2" id="gridDimBadge">5 x 5</span>
+         <!-- ANIMATION SETUP & TYPE SELECTOR CARD -->
+        <div class="card mb-3 border-primary border-opacity-25">
+          <div class="card-header bg-dark d-flex align-items-center justify-content-between py-2">
+            <span class="fw-bold text-light"><i class="fa-solid fa-sliders text-primary me-2"></i>Animation Setup</span>
           </div>
-          <div class="card-body">
-            <div class="row g-2 align-items-center mb-3">
-              <div class="col-6">
-                <label for="gridWidth" class="form-label small text-secondary mb-1">Width (W)</label>
-                <input type="number" id="gridWidth" class="form-control form-control-sm" min="1" max="64" value="5">
+          <div class="card-body p-3">
+            <div class="row g-3 align-items-center">
+              
+              <!-- Animation Movement Type Selector -->
+              <div class="col-lg-7 col-md-12">
+               
+                <div class="btn-group w-100" role="group" aria-label="Movement Mode Selection">
+                  <input type="radio" class="btn-check" name="mainAnimType" id="mainTypeStationary" value="stationary" checked onchange="setAnimType('stationary')">
+                  <label class="btn btn-outline-primary btn-sm" for="mainTypeStationary">
+                    <i class="fa-solid fa-sync me-1"></i> Stationary
+                  </label>
+
+                  <input type="radio" class="btn-check" name="mainAnimType" id="mainTypeProjectile" value="projectile" onchange="setAnimType('projectile')">
+                  <label class="btn btn-outline-primary btn-sm" for="mainTypeProjectile">
+                    <i class="fa-solid fa-rocket me-1"></i> Projectile
+                  </label>
+
+                  <input type="radio" class="btn-check" name="mainAnimType" id="mainTypeWalking" value="walking" onchange="setAnimType('walking')">
+                  <label class="btn btn-outline-primary btn-sm" for="mainTypeWalking">
+                    <i class="fa-solid fa-person-walking me-1"></i> Walking
+                  </label>
+                </div>
               </div>
-              <div class="col-6">
-                <label for="gridHeight" class="form-label small text-secondary mb-1">Height (H)</label>
-                <input type="number" id="gridHeight" class="form-control form-control-sm" min="1" max="64" value="5">
+
+              <!-- Animated Sprite Base Name -->
+              <div class="col-lg-5 col-md-12">
+                <label for="animNameInput" class="form-label small text-secondary fw-semibold mb-1">
+                  Sprite Base Name
+                </label>
+                <input type="text" id="animNameInput" class="form-control form-control-sm bg-dark text-light border-secondary font-monospace" value="PLAYER" oninput="updateAnimName(this.value)">
               </div>
-              <div class="col-12 mt-2">
-                <button class="btn btn-outline-secondary btn-sm w-100" onclick="applyGridSize()">
-                  <i class="fa-solid fa-check me-1"></i> Resize All Frames
-                </button>
-              </div>
+
             </div>
           </div>
         </div>
+
+         <!-- ANIMATION FRAMES GRID CARD -->
+        <div class="card mb-3">
+          <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-film text-primary"></i>
+              <span class="fw-bold">Frame Strip Grid</span>
+            </div>
+
+            <!-- Global Actions -->
+            <div class="btn-group btn-group-sm" role="group">
+              <button class="btn btn-outline-success" onclick="addRow()"><i class="fa-solid fa-plus me-1"></i> Add Row</button>
+              <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#importAnimModal"><i class="fa-solid fa-file-import me-1"></i> Import</button>
+            </div>
+          </div>
+
+          <!-- Dynamic Multi-Row Grid Container -->
+          <div class="card-body p-2">
+            <div id="framesGridContainer" class="d-flex flex-column gap-2">
+              <!-- Dynamically rendered rows & frames with Drag and Drop -->
+            </div>
+          </div>
+        </div>
+
+        
 
         <!-- Drawing Tools -->
         <div class="card mb-3">
@@ -141,6 +182,8 @@
             </div>
           </div>
         </div>
+
+
 
         <!-- Transform Controls Card -->
         <div class="card mb-3">
@@ -239,41 +282,12 @@
 
       </div>
 
-      <!-- MIDDLE COLUMN: Animation Frames Sequence & Canvas Editor -->
-      <div class="col-lg-6 col-md-8">
+      <!-- MIDDLE COLUMN: Animation Setup, Multi-row Grid Sequence & Canvas Editor -->
+      <div id="middleColumn" class="col-lg-5 col-md-8">
 
-        <!-- ANIMATION FRAMES CARD -->
-        <div class="card mb-3">
-          <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
-            <div class="d-flex align-items-center gap-2">
-              <i class="fa-solid fa-film text-primary"></i>
-              <div class="input-group input-group-sm" style="max-width: 300px;">
-                <span class="input-group-text bg-secondary border-secondary text-light small">Animated Sprite
-                  Name</span>
-                <input type="text" id="animNameInput" class="form-control" value="PLAYER_WALK"
-                  oninput="updateAnimName(this.value)">
-              </div>
-            </div>
-
-            <!-- Frame Actions -->
-            <div class="btn-group btn-group-sm" role="group">
-              <button class="btn btn-outline-success" onclick="addBlankFrame()"><i class="fa-solid fa-plus me-1"></i>
-                Blank</button>
-              <button class="btn btn-outline-info" onclick="duplicateFrame()"><i class="fa-solid fa-clone me-1"></i>
-                Duplicate</button>
-              <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#importAnimModal"><i
-                  class="fa-solid fa-file-import me-1"></i> Import</button>
-            </div>
-          </div>
-
-          <!-- Frames Strip Container -->
-          <div class="card-body p-2">
-            <div id="framesStrip" class="d-flex gap-2 overflow-x-auto pb-2"
-              style="min-height: 120px; align-items: center;">
-              <!-- Dynamic Frame Thumbnails -->
-            </div>
-          </div>
-        </div>
+       
+        
+        
 
         <!-- Palette Bar Card -->
         <div class="card mb-3">
@@ -294,7 +308,7 @@
         <div class="card">
           <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
             <span class="fw-semibold" id="activeFrameTitle"><i
-                class="fa-solid fa-pen-to-square text-primary me-2"></i>Editing Frame: 0</span>
+                class="fa-solid fa-pen-to-square text-primary me-2"></i>Editing: Frame 0</span>
 
             <div class="form-check form-switch mb-0 d-flex align-items-center gap-2">
               <input class="form-check-input mt-0" type="checkbox" id="toggleGridLines" checked onchange="renderAll()">
@@ -316,7 +330,7 @@
       </div>
 
       <!-- RIGHT COLUMN: Animation Preview & PuzzleScript Code Output -->
-      <div class="col-lg-3 col-md-12">
+      <div id="rightColumn" class="col-lg-3 col-md-12">
 
         <!-- Live Animation Preview Card -->
         <div class="card mb-3">
@@ -325,6 +339,14 @@
             <span class="badge bg-dark border border-secondary" id="previewScaleBadge">4x Scale</span>
           </div>
           <div class="card-body text-center">
+
+            <!-- Row Selector for Preview -->
+            <div class="mb-2 d-flex align-items-center gap-2">
+              <label for="previewRowSelect" class="form-label small text-secondary mb-0 text-nowrap">Row:</label>
+              <select id="previewRowSelect" class="form-select form-select-sm" onchange="renderPreviewCanvas()">
+                <option value="active" selected>Active Row</option>
+              </select>
+            </div>
 
             <!-- Preview Canvas -->
             <div id="previewContainer" class="p-3 mb-3 bg-checkerboard d-flex justify-content-center align-items-center"
@@ -358,6 +380,7 @@
                   <option value="2">2x</option>
                   <option value="4" selected>4x</option>
                   <option value="8">8x</option>
+                  <option value="16">16x</option>
                 </select>
               </div>
 
@@ -370,6 +393,33 @@
 
           </div>
         </div>
+
+       
+<!-- Dimensions Card -->
+        <div class="card mb-3">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="fa-solid fa-border-all text-primary me-2"></i>Frame Dimensions</span>
+            <span class="badge bg-secondary small-2" id="gridDimBadge">5 x 5</span>
+          </div>
+          <div class="card-body">
+            <div class="row g-2 align-items-center mb-3">
+              <div class="col-6">
+                <label for="gridWidth" class="form-label small text-secondary mb-1">Width (W)</label>
+                <input type="number" id="gridWidth" class="form-control form-control-sm" min="1" max="64" value="5">
+              </div>
+              <div class="col-6">
+                <label for="gridHeight" class="form-label small text-secondary mb-1">Height (H)</label>
+                <input type="number" id="gridHeight" class="form-control form-control-sm" min="1" max="64" value="5">
+              </div>
+              <div class="col-12 mt-2">
+                <button class="btn btn-outline-secondary btn-sm w-100" onclick="applyGridSize()">
+                  <i class="fa-solid fa-check me-1"></i> Resize All Frames
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
         <!-- Export Code Card -->
         <div class="card mb-3">
@@ -402,7 +452,7 @@
             Paste one or more PuzzleScript sprite definitions below:
           </p>
           <textarea id="importAnimCodeArea" class="form-control ps-code-box p-2 mb-3" rows="8"
-            placeholder="PLAYER_WALK_0&#10;#ff0000 #0000ff&#10;.000.&#10;00100&#10;.000.&#10;&#10;PLAYER_WALK_1&#10;#ff0000 #0000ff&#10;.000.&#10;00010&#10;.000."></textarea>
+            placeholder="PLAYER_MovingRight_frame0&#10;#ff0000 #0000ff&#10;.000.&#10;00100&#10;.000.&#10;&#10;PLAYER_MovingRight_frame1&#10;#ff0000 #0000ff&#10;.000.&#10;00010&#10;.000."></textarea>
           <div id="importAnimErrorAlert" class="alert alert-danger p-2 small d-none"></div>
         </div>
         <div class="modal-footer">
@@ -425,147 +475,124 @@
     </div>
   </div>
 
-
-
   <!-- MODAL: Export PuzzleScript Animation Code -->
-<div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content card">
-      <div class="modal-header card-header">
-        <h5 class="modal-title"><i class="fa-solid fa-file-export text-primary me-2"></i>Export PuzzleScript Animation</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-
-        <!-- Movement Type Selection -->
-        <div class="mb-3">
-          <label class="form-label fw-bold text-light mb-2">Sprite Type</label>
-          <div class="btn-group w-100" role="group">
-            <input type="radio" class="btn-check" name="animType" id="typeStationary" value="stationary" checked onchange="generateExportCode()">
-            <label class="btn btn-outline-primary" for="typeStationary">
-              <i class="fa-solid fa-sync me-1"></i> Stationary
-            </label>
-
-            <input type="radio" class="btn-check" name="animType" id="typeProjectile" value="projectile" onchange="generateExportCode()">
-            <label class="btn btn-outline-primary" for="typeProjectile">
-              <i class="fa-solid fa-rocket me-1"></i> Projectile
-            </label>
-
-            <input type="radio" class="btn-check" name="animType" id="typeMoving" value="moving" onchange="generateExportCode()" disabled>
-            <label class="btn btn-outline-secondary" for="typeMoving">
-              <i class="fa-solid fa-person-walking me-1"></i> More To Come?
-            </label>
-          </div>
+  <div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content card">
+        <div class="modal-header card-header d-flex align-items-center justify-content-between">
+          <h5 class="modal-title d-flex align-items-center gap-2">
+            <i class="fa-solid fa-file-export text-primary me-1"></i>
+            <span>Export PuzzleScript Animation</span>
+            <span class="badge bg-primary fs-6" id="modalAnimTypeBadge">STATIONARY</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
 
-        <!-- Projectile Directions Checkboxes -->
-        <div id="projectileDirectionsGroup" class="mb-3 d-none">
-          <label class="form-label fw-bold text-light mb-2">Generate Directions</label>
-          <div class="d-flex flex-wrap gap-3 bg-dark p-2 rounded border border-secondary">
-            <div class="form-check form-check-inline mb-0">
-              <input class="form-check-input" type="checkbox" id="dirRight" value="right" checked onchange="generateExportCode()">
-              <label class="form-check-label text-light small fw-bold" for="dirRight">Right</label>
-            </div>
-            <div class="form-check form-check-inline mb-0">
-              <input class="form-check-input" type="checkbox" id="dirLeft" value="left" onchange="generateExportCode()">
-              <label class="form-check-label text-light small fw-bold" for="dirLeft">Left</label>
-            </div>
-            <div class="form-check form-check-inline mb-0">
-              <input class="form-check-input" type="checkbox" id="dirUp" value="up" onchange="generateExportCode()">
-              <label class="form-check-label text-light small fw-bold" for="dirUp">Up</label>
-            </div>
-            <div class="form-check form-check-inline mb-0">
-              <input class="form-check-input" type="checkbox" id="dirDown" value="down" onchange="generateExportCode()">
-              <label class="form-check-label text-light small fw-bold" for="dirDown">Down</label>
-            </div>
-          </div>
-        </div>
+          <!-- Movement Type Selection inside Export Modal -->
+          <div class="mb-3">
+            <label class="form-label fw-bold text-light mb-2">Sprite Movement Mode</label>
+            <div class="btn-group w-100" role="group">
+              <input type="radio" class="btn-check" name="modalAnimType" id="modalTypeStationary" value="stationary" onchange="setAnimType('stationary')">
+              <label class="btn btn-outline-primary" for="modalTypeStationary">
+                <i class="fa-solid fa-sync me-1"></i> Stationary
+              </label>
 
-        <hr class="border-secondary opacity-25">
+              <input type="radio" class="btn-check" name="modalAnimType" id="modalTypeProjectile" value="projectile" onchange="setAnimType('projectile')">
+              <label class="btn btn-outline-primary" for="modalTypeProjectile">
+                <i class="fa-solid fa-rocket me-1"></i> Projectile
+              </label>
 
-        <div class="mb-2 small" id="spriteTypeDescription">
-          These settings work well for "Stationary" objects that either don't move at all or only move when pushed by the player
-        </div>
-
-        <!-- Output Sections Accordion -->
-        <div class="accordion" id="exportAccordion">
-
-          <!-- 0. PRELUDE -->
-          <div class="card mb-2 border-secondary">
-            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-              <span class="small fw-bold text-info"><i class="fa-solid fa-play-circle me-1"></i> PRELUDE (the3 untitled section above OBJECTS)</span>
-              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportPreludeCode')">
-                <i class="fa-solid fa-copy me-1"></i> Copy
-              </button>
-            </div>
-            <div class="card-body p-2">
-              <textarea id="exportPreludeCode" class="form-control ps-code-box p-2" rows="3" readonly></textarea>
+              <input type="radio" class="btn-check" name="modalAnimType" id="modalTypeWalking" value="walking" onchange="setAnimType('walking')">
+              <label class="btn btn-outline-primary" for="modalTypeWalking">
+                <i class="fa-solid fa-person-walking me-1"></i> Walking
+              </label>
             </div>
           </div>
 
-          <!-- 1. OBJECTS -->
-          <div class="card mb-2 border-secondary">
-            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-              <span class="small fw-bold text-info"><i class="fa-solid fa-cubes me-1"></i> OBJECTS</span>
-              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportObjectsCode')">
-                <i class="fa-solid fa-copy me-1"></i> Copy
-              </button>
-            </div>
-            <div class="card-body p-2">
-              <textarea id="exportObjectsCode" class="form-control ps-code-box p-2" rows="6" readonly></textarea>
-            </div>
+          <hr class="border-secondary opacity-25">
+
+          <div class="mb-3 small alert alert-dark border-secondary text-secondary" id="spriteTypeDescription">
+            Exporting animation rules based on the active setup.
           </div>
 
-          <!-- 2. LEGEND -->
-          <div class="card mb-2 border-secondary">
-            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-              <span class="small fw-bold text-info"><i class="fa-solid fa-list me-1"></i> LEGEND</span>
-              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportLegendCode')">
-                <i class="fa-solid fa-copy me-1"></i> Copy
-              </button>
-            </div>
-            <div class="card-body p-2">
-              <textarea id="exportLegendCode" class="form-control ps-code-box p-2" rows="5" readonly></textarea>
-            </div>
-          </div>
+          <!-- Output Sections Accordion -->
+          <div class="accordion" id="exportAccordion">
 
-          <!-- 3. COLLISIONLAYERS -->
-          <div class="card mb-2 border-secondary">
-            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-              <span class="small fw-bold text-info"><i class="fa-solid fa-layer-group me-1"></i> COLLISIONLAYERS</span>
-              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportCollisionLayersCode')">
-                <i class="fa-solid fa-copy me-1"></i> Copy
-              </button>
+            <!-- 0. PRELUDE -->
+            <div class="card mb-2 border-secondary">
+              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+                <span class="small fw-bold text-info"><i class="fa-solid fa-play-circle me-1"></i> PRELUDE (the section above OBJECTS)</span>
+                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportPreludeCode')">
+                  <i class="fa-solid fa-copy me-1"></i> Copy
+                </button>
+              </div>
+              <div class="card-body p-2">
+                <textarea id="exportPreludeCode" class="form-control ps-code-box p-2" rows="3" readonly></textarea>
+              </div>
             </div>
-            <div class="card-body p-2">
-              <textarea id="exportCollisionLayersCode" class="form-control ps-code-box p-2" rows="1" readonly></textarea>
-            </div>
-          </div>
 
-          <!-- 4. RULES -->
-          <div class="card border-secondary">
-            <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-              <span class="small fw-bold text-info"><i class="fa-solid fa-gears me-1"></i> RULES</span>
-              <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportRulesCode')">
-                <i class="fa-solid fa-copy me-1"></i> Copy
-              </button>
+            <!-- 1. OBJECTS -->
+            <div class="card mb-2 border-secondary">
+              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+                <span class="small fw-bold text-info"><i class="fa-solid fa-cubes me-1"></i> OBJECTS</span>
+                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportObjectsCode')">
+                  <i class="fa-solid fa-copy me-1"></i> Copy
+                </button>
+              </div>
+              <div class="card-body p-2">
+                <textarea id="exportObjectsCode" class="form-control ps-code-box p-2" rows="6" readonly></textarea>
+              </div>
             </div>
-            <div class="card-body p-2">
-              <textarea id="exportRulesCode" class="form-control ps-code-box p-2" rows="8" readonly></textarea>
+
+            <!-- 2. LEGEND -->
+            <div class="card mb-2 border-secondary">
+              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+                <span class="small fw-bold text-info"><i class="fa-solid fa-list me-1"></i> LEGEND</span>
+                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportLegendCode')">
+                  <i class="fa-solid fa-copy me-1"></i> Copy
+                </button>
+              </div>
+              <div class="card-body p-2">
+                <textarea id="exportLegendCode" class="form-control ps-code-box p-2" rows="5" readonly></textarea>
+              </div>
             </div>
+
+            <!-- 3. COLLISIONLAYERS -->
+            <div class="card mb-2 border-secondary">
+              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+                <span class="small fw-bold text-info"><i class="fa-solid fa-layer-group me-1"></i> COLLISIONLAYERS</span>
+                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportCollisionLayersCode')">
+                  <i class="fa-solid fa-copy me-1"></i> Copy
+                </button>
+              </div>
+              <div class="card-body p-2">
+                <textarea id="exportCollisionLayersCode" class="form-control ps-code-box p-2" rows="1" readonly></textarea>
+              </div>
+            </div>
+
+            <!-- 4. RULES -->
+            <div class="card border-secondary">
+              <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
+                <span class="small fw-bold text-info"><i class="fa-solid fa-gears me-1"></i> RULES</span>
+                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="copyField('exportRulesCode')">
+                  <i class="fa-solid fa-copy me-1"></i> Copy
+                </button>
+              </div>
+              <div class="card-body p-2">
+                <textarea id="exportRulesCode" class="form-control ps-code-box p-2" rows="8" readonly></textarea>
+              </div>
+            </div>
+
           </div>
 
         </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="animationscript.js"></script>

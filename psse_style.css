@@ -15,6 +15,24 @@ a:hover {
 	--accent-color: #b6dd0a;
 }
 
+.accordion-button::after {
+  display: none !important;
+}
+
+.accordion-button::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f0da"; /* fa-caret-right */
+  margin-right: 0.6rem;
+  color: #a0a0a0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.accordion-button:not(.collapsed)::before {
+  content: "\f0d7"; /* fa-caret-down */
+  color: #0d6efd;
+}
+
 body {
 	/* font-family: 'Inter', sans-serif; */
 	font-family: monospace;
