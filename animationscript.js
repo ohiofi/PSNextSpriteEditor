@@ -1008,71 +1008,191 @@ function showToast(msg) {
   toast.show();
 }
 
-/* Generate Custom PuzzleScript Export Code for Stationary / Moving Animations */
+/* Generate Custom PuzzleScript Export Code for Stationary / Projectile Animations */
 function generateExportCode() {
+  const isProjectile = document.getElementById('typeProjectile')?.checked ?? false;
   const isStationary = document.getElementById('typeStationary')?.checked ?? true;
+  
   const animName = (document.getElementById('animNameInput').value.trim() || 'ANIM').replace(/[^a-z0-9_]/gi, '_');
   const colorsLine = state.palette.join(' ');
   const frameCount = state.frames.length;
   const interval = state.animInterval || 0.2;
 
-  let frameNames = [];
+  const directionsContainer = document.getElementById('projectileDirectionsGroup');
 
-  // --- 0. PRELUDE SECTION ---
-  let preludeCode = `realtime_interval ${interval}`;
+  if (isProjectile) {
+    if (directionsContainer) directionsContainer.classList.remove('d-none');
 
-  // --- 1. OBJECTS SECTION ---
-  let objectsCode = `( marker to prevent multiple frames per clock tick )\n${animName}_hasAnimated\ntransparent\n\n`;
+    // Gather selected directions
+    let selectedDirs = [];
+    if (document.getElementById('dirRight')?.checked) selectedDirs.push('right');
+    if (document.getElementById('dirLeft')?.checked) selectedDirs.push('left');
+    if (document.getElementById('dirUp')?.checked) selectedDirs.push('up');
+    if (document.getElementById('dirDown')?.checked) selectedDirs.push('down');
 
-  state.frames.forEach((framePixels, fIdx) => {
-    const frameName = `${animName}_frame${fIdx}`;
-    frameNames.push(frameName);
-
-    let gridLines = [];
-    for (let y = 0; y < state.height; y++) {
-      let rowStr = '';
-      for (let x = 0; x < state.width; x++) {
-        const colorIdx = framePixels[x + y * state.width];
-        rowStr += colorIdx >= 0 ? (SYMBOL_MAP[colorIdx] || '?') : '.';
-      }
-      gridLines.push(rowStr);
+    if (selectedDirs.length === 0) {
+      selectedDirs = ['right'];
+      if (document.getElementById('dirRight')) document.getElementById('dirRight').checked = true;
     }
 
-    objectsCode += `${frameName}\n${colorsLine}\n${gridLines.join('\n')}\n\n`;
-  });
+    const isMultiDir = selectedDirs.length > 1;
+    const keyRepeat = (parseFloat(interval) + 0.1).toFixed(2);
 
-  // --- 2. LEGEND SECTION ---
-  const mapChar = animName.charAt(0).toUpperCase() || 'N';
-  let legendCode = `( classify all frames as ${animName} )\n${animName} = ${frameNames.join(' or ')}\n\n( use ${mapChar} to add ${animName} to map )\n${mapChar} = ${animName}_frame0`;
+    // --- Description ---
+    let descriptionText = `These settings generate projectile movement and animation rules for firing objects across the screen.`;
 
-  // --- 3. COLLISIONLAYERS SECTION ---
-  let collisionCode = `${animName}_hasAnimated ( should be its own separate layer )`;
+    // --- 0. PRELUDE ---
+    let preludeCode = `realtime_interval ${interval}\nthrottle_movement\nkey_repeat_interval ${keyRepeat}`;
 
-  // --- 4. RULES SECTION ---
-  let rulesCode = ``;
+    // --- 1. OBJECTS ---
+    let objectsCode = `( marker to prevent multiple frames per clock tick )\n${animName}_hasAnimated\ntransparent\n\n`;
+    
+    const primaryDir = selectedDirs[0];
 
-  if (isStationary) {
-    rulesCode += ``;
-    rulesCode += `( ${animName} stationary object animation cycle )\n( stays constant whether player moves or not )\nlate [ ${animName}_hasAnimated ] -> []\n`;
+    // Primary direction full bitmaps
+    state.frames.forEach((framePixels, fIdx) => {
+      const frameName = isMultiDir ? `${animName}_${primaryDir}_frame${fIdx}` : `${animName}_frame${fIdx}`;
+      let gridLines = [];
+      for (let y = 0; y < state.height; y++) {
+        let rowStr = '';
+        for (let x = 0; x < state.width; x++) {
+          const colorIdx = framePixels[x + y * state.width];
+          rowStr += colorIdx >= 0 ? (SYMBOL_MAP[colorIdx] || '?') : '.';
+        }
+        gridLines.push(rowStr);
+      }
+      objectsCode += `${frameName}\n${colorsLine}\n${gridLines.join('\n')}\n\n`;
+    });
+
+    // Additional directions use shortcut syntax
+    for (let i = 1; i < selectedDirs.length; i++) {
+      const dir = selectedDirs[i];
+      state.frames.forEach((_, fIdx) => {
+        const frameName = `${animName}_${dir}_frame${fIdx}`;
+        const sourceFrameName = `${animName}_${primaryDir}_frame${fIdx}`;
+        objectsCode += `${frameName}\n${colorsLine}\ncopy:${sourceFrameName} flip:${dir}\n\n`;
+      });
+    }
+
+    // --- 2. LEGEND ---
+    const mapChar = animName.charAt(0).toUpperCase() || 'B';
+    const firstFrameName = isMultiDir ? `${animName}_${primaryDir}_frame0` : `${animName}_frame0`;
+    let legendClassifyLines = [];
+
+    if (isMultiDir) {
+      // Define each directional alias with its frames
+      selectedDirs.forEach(dir => {
+        let dirFrames = [];
+        for (let fIdx = 0; fIdx < frameCount; fIdx++) {
+          dirFrames.push(`${animName}_${dir}_frame${fIdx}`);
+        }
+        legendClassifyLines.push(`${animName}_${dir} = ${dirFrames.join(' or ')}`);
+      });
+
+      // Union definition linking all directions under the primary name
+      const dirAliases = selectedDirs.map(dir => `${animName}_${dir}`);
+      legendClassifyLines.push(`${animName} = ${dirAliases.join(' or ')}`);
+    } else {
+      let singleFrames = [];
+      for (let fIdx = 0; fIdx < frameCount; fIdx++) {
+        singleFrames.push(`${animName}_frame${fIdx}`);
+      }
+      legendClassifyLines.push(`${animName} = ${singleFrames.join(' or ')}`);
+    }
+
+    let legendCode = `( classify all frames as ${animName} )\n${legendClassifyLines.join('\n')}\n\n( list objects that collide with ${animName} here )\n${animName}Obstacle = Wall or Crate\n\n( use ${mapChar} to add ${animName} to map )\n${mapChar} = ${firstFrameName}`;
+
+    // --- 3. COLLISIONLAYERS ---
+    let collisionCode = `${animName}_hasAnimated ( should be its own separate layer )`;
+
+    // --- 4. RULES ---
+    let rulesCode = `late [ ${animName}_hasAnimated ] -> []\n\n`;
+
+    selectedDirs.forEach(dir => {
+      const objBase = isMultiDir ? `${animName}_${dir}` : animName;
+      rulesCode += `( ${objBase} projectile object animation cycle )\n`;
+      rulesCode += `( moves at a constant speed whether player moves or not )\n`;
+      rulesCode += `( ${objBase} always moves ${dir} )\n`;
+
+      for (let fIdx = 0; fIdx < frameCount; fIdx++) {
+        const currFrame = isMultiDir ? `${animName}_${dir}_frame${fIdx}` : `${animName}_frame${fIdx}`;
+        const nextFrame = isMultiDir ? `${animName}_${dir}_frame${(fIdx + 1) % frameCount}` : `${animName}_frame${(fIdx + 1) % frameCount}`;
+        rulesCode += `[ stationary Player ] [ ${currFrame} no ${animName}_hasAnimated ] -> [ Player ] [ ${dir} ${nextFrame} ${animName}_hasAnimated ]\n`;
+      }
+
+      rulesCode += `( if ${objBase} on target, target dies )\n`;
+      rulesCode += `[ ${objBase} target ] -> [ target ]\n`;
+      rulesCode += `( if ${objBase} is on top of an obstacle, remove it )\n`;
+      rulesCode += `[ ${objBase} ${animName}Obstacle ] -> [ ${animName}Obstacle ]\n\n`;
+    });
+
+    rulesCode += `( NOTE: spawn ${animName} below all other bullet rules as movement cannot be late )\n`;
+    rulesCode += `( spawn ${animName} when user presses action button )\n`;
+    
+    if (isMultiDir) {
+      selectedDirs.forEach(dir => {
+        rulesCode += `[ action Player_facing_${dir} ] -> [ Player_facing_${dir} ${animName}_${dir}_frame0 ]\n`;
+      });
+    } else {
+      rulesCode += `[ action Player_facing_right ] -> [ Player_facing_right ${animName}_frame0 ]\n`;
+    }
+
+    // Update UI elements
+    if (document.getElementById('spriteTypeDescription')) document.getElementById('spriteTypeDescription').innerText = descriptionText;
+    if (document.getElementById('exportPreludeCode')) document.getElementById('exportPreludeCode').value = preludeCode;
+    if (document.getElementById('exportObjectsCode')) document.getElementById('exportObjectsCode').value = objectsCode.trim();
+    if (document.getElementById('exportLegendCode')) document.getElementById('exportLegendCode').value = legendCode;
+    if (document.getElementById('exportCollisionLayersCode')) document.getElementById('exportCollisionLayersCode').value = collisionCode;
+    if (document.getElementById('exportRulesCode')) document.getElementById('exportRulesCode').value = rulesCode.trim();
+
+  } else {
+    // --- Stationary Mode ---
+    if (directionsContainer) directionsContainer.classList.add('d-none');
+
+    let descriptionText = `These settings work well for "Stationary" objects that either don't move at all or only move when pushed by the player`;
+    let preludeCode = `realtime_interval ${interval}`;
+
+    let frameNames = [];
+    let objectsCode = `( marker to prevent multiple frames per clock tick )\n${animName}_hasAnimated\ntransparent\n\n`;
+
+    state.frames.forEach((framePixels, fIdx) => {
+      const frameName = `${animName}_frame${fIdx}`;
+      frameNames.push(frameName);
+
+      let gridLines = [];
+      for (let y = 0; y < state.height; y++) {
+        let rowStr = '';
+        for (let x = 0; x < state.width; x++) {
+          const colorIdx = framePixels[x + y * state.width];
+          rowStr += colorIdx >= 0 ? (SYMBOL_MAP[colorIdx] || '?') : '.';
+        }
+        gridLines.push(rowStr);
+      }
+      objectsCode += `${frameName}\n${colorsLine}\n${gridLines.join('\n')}\n\n`;
+    });
+
+    const mapChar = animName.charAt(0).toUpperCase() || 'N';
+    let legendCode = `( classify all frames as ${animName} )\n${animName} = ${frameNames.join(' or ')}\n\n( use ${mapChar} to add ${animName} to map )\n${mapChar} = ${animName}_frame0`;
+
+    let collisionCode = `${animName}_hasAnimated ( should be its own separate layer )`;
+
+    let rulesCode = `( ${animName} stationary object animation cycle )\n( stays constant whether player moves or not )\nlate [ ${animName}_hasAnimated ] -> []\n`;
     if (frameCount > 1) {
       for (let i = 0; i < frameCount; i++) {
         const nextI = (i + 1) % frameCount;
         rulesCode += `[ stationary Player ] [ ${animName}_frame${i} no ${animName}_hasAnimated ] -> [ Player ] [ ${animName}_frame${nextI} ${animName}_hasAnimated ]\n`;
       }
-      
     } else {
       rulesCode += `( Single frame animation - no rules needed )`;
     }
-  } else {
-    rulesCode += `( Moving Animation rules reserved for directional motion inputs )`;
-  }
 
-  // Populate Modal Text Fields
-  if (document.getElementById('exportPreludeCode')) document.getElementById('exportPreludeCode').innerHTML = preludeCode;
-  if (document.getElementById('exportObjectsCode')) document.getElementById('exportObjectsCode').value = objectsCode.trim();
-  if (document.getElementById('exportLegendCode')) document.getElementById('exportLegendCode').value = legendCode;
-  if (document.getElementById('exportCollisionLayersCode')) document.getElementById('exportCollisionLayersCode').value = collisionCode;
-  if (document.getElementById('exportRulesCode')) document.getElementById('exportRulesCode').value = rulesCode;
+    if (document.getElementById('spriteTypeDescription')) document.getElementById('spriteTypeDescription').innerText = descriptionText;
+    if (document.getElementById('exportPreludeCode')) document.getElementById('exportPreludeCode').value = preludeCode;
+    if (document.getElementById('exportObjectsCode')) document.getElementById('exportObjectsCode').value = objectsCode.trim();
+    if (document.getElementById('exportLegendCode')) document.getElementById('exportLegendCode').value = legendCode;
+    if (document.getElementById('exportCollisionLayersCode')) document.getElementById('exportCollisionLayersCode').value = collisionCode;
+    if (document.getElementById('exportRulesCode')) document.getElementById('exportRulesCode').value = rulesCode.trim();
+  }
 }
 
 /* Frame Transformation Actions */
