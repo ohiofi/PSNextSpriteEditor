@@ -734,24 +734,24 @@ function setPreviewBG(mode) {
 
 function setPreviewScale(scale) {
   state.previewScale = parseInt(scale, 10) || 4;
-  updatePreviewBadge();
+  //updatePreviewBadge();
   renderPreviewCanvas();
   autoSave();
 }
 
 function toggleWallpaperMode(enabled) {
   state.isWallpaper = !!enabled;
-  updatePreviewBadge();
+  //updatePreviewBadge();
   renderPreviewCanvas();
   autoSave();
 }
 
-function updatePreviewBadge() {
-  const badge = document.getElementById('previewScaleBadge');
-  if (badge) {
-    badge.innerText = `${state.previewScale}x ${state.isWallpaper ? 'Wallpaper' : 'Scale'}`;
-  }
-}
+// function updatePreviewBadge() {
+//   const badge = document.getElementById('previewScaleBadge');
+//   if (badge) {
+//     badge.innerText = `${state.previewScale}x ${state.isWallpaper ? 'Wallpaper' : 'Scale'}`;
+//   }
+// }
 
 /* PuzzleScript Code Output & Parser */
 function updatePuzzleScriptOutput() {

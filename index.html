@@ -334,22 +334,9 @@
 <div class="card mb-3">
   <div class="card-header d-flex justify-content-between align-items-center">
     <span><i class="fa-solid fa-eye text-primary me-2"></i>Preview</span>
-    <span class="badge bg-dark border border-secondary" id="previewScaleBadge">4x Scale</span>
-  </div>
-  <div class="card-body text-center">
-
-    <!-- Preview Box -->
-    <div id="previewContainer"
-      class="p-3 mb-3 bg-checkerboard d-flex justify-content-center align-items-center"
-      style="min-height: 140px; max-height: 240px; overflow: auto;">
-      <canvas id="previewCanvas"></canvas>
-    </div>
-
-    <!-- Simplified Controls: Scale Dropdown & Wallpaper Switch -->
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
-      <!-- Scale Dropdown Group -->
-      <div class="d-flex align-items-center gap-1">
-        <label for="previewScaleSelect" class="form-label small text-secondary mb-0 me-1">Scale</label>
+    <!-- <span class="badge bg-dark border border-secondary" id="previewScaleBadge">4x Scale</span> -->
+     <div class="d-flex align-items-center gap-1">
+        <label for="previewScaleSelect" class="form-label small text-secondary mb-0 me-1"><i class="fa-solid fa-magnifying-glass"></i></label>
         <select id="previewScaleSelect" class="form-select form-select-sm" style="width: 72px;" onchange="setPreviewScale(this.value)">
           <option value="1">1x</option>
           <option value="2">2x</option>
@@ -358,11 +345,25 @@
           <option value="16">16x</option>
         </select>
       </div>
+  </div>
+  <div class="card-body text-center">
+
+    <!-- Preview Box -->
+    <div id="previewContainer"
+      class="p-3 mb-3 bg-checkerboard d-flex justify-content-center align-items-center"
+      style="min-height: 140px; max-height: 200px; overflow: auto;">
+      <canvas id="previewCanvas"></canvas>
+    </div>
+
+    <!-- Simplified Controls: Scale Dropdown & Wallpaper Switch -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+      
+      
 
       <!-- Wallpaper Switch -->
       <div class="form-check form-switch mb-0 d-inline-flex align-items-center gap-1 ps-0">
         <input class="form-check-input ms-0 mt-0" type="checkbox" id="toggleWallpaper" onchange="toggleWallpaperMode(this.checked)">
-        <label class="form-check-label small text-secondary text-nowrap" for="toggleWallpaper">Wallpaper</label>
+        <label class="form-check-label small text-secondary text-nowrap" for="toggleWallpaper"><i class="fa-solid fa-users"></i></label>
       </div>
     </div>
 
