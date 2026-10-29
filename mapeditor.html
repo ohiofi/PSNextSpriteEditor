@@ -103,13 +103,13 @@
       <div class="col-lg-2 col-md-4">
 
         <!-- Map Dimensions Card -->
-        <div class="card mb-3">
+        <div class="card mb-0">
           <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="fa-solid fa-vector-square text-success me-2"></i>Map Size</span>
             <span class="badge bg-secondary small-2" id="mapDimBadge">10 x 10</span>
           </div>
           <div class="card-body">
-            <div class="row g-2 align-items-center mb-3">
+            <div class="row g-2 align-items-center mb-0">
               <div class="col-6">
                 <label for="mapWidth" class="form-label small text-secondary mb-1">Width (W)</label>
                 <input type="number" id="mapWidth" class="form-control form-control-sm" min="1" max="128" value="10">
@@ -138,49 +138,46 @@
         </div>
 
         <!-- Tools -->
-<div class="card mb-3">
+<div class="card mb-0">
   <div class="card-header"><i class="fa-solid fa-paint-brush text-success me-2"></i>Tools</div>
   <div class="card-body p-2 p-xl-3">
-    <div class="d-grid gap-2">
-      <!-- Draw & Erase Row -->
-      <div class="btn-group w-100" role="group">
-        <button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil" onclick="setMapTool('draw')" title="Paint Tile [D]">
-          <i class="fa-solid fa-pen"></i>
-          <span class="tool-label">[D]raw</span>
-        </button>
-        <button class="btn btn-outline-secondary tool-btn w-50" id="toolEraser" onclick="setMapTool('erase')" title="Erase Tile [E]">
-          <i class="fa-solid fa-eraser"></i>
-          <span class="tool-label">[E]rase</span>
-        </button>
-      </div>
+   <div class="d-grid gap-2">
+                            <div class="btn-group w-100" role="group">
+                                <button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil"
+                                    onclick="setTool('draw')">
+                                    <i class="fa-solid fa-pencil"></i>
+                                    <span class="tool-label">[D]raw</span>
+                                </button>
+                                <button class="btn btn-outline-secondary tool-btn w-50" id="toolEraser"
+                                    onclick="setTool('erase')">
+                                    <i class="fa-solid fa-eraser"></i>
+                                    <span class="tool-label">[E]rase</span>
+                                </button>
+                            </div>
+                            <!-- Row 2: Fill, Brush & Size -->
+                            <div class="input-group w-100">
+                                <button class="btn btn-outline-secondary tool-btn w-50" id="toolFill"
+                                    onclick="setTool('fill')">
+                                    <i class="fa-solid fa-fill-drip"></i>
+                                    <span class="tool-label">[F]ill</span>
+                                </button>
+                                <button class="btn btn-outline-secondary tool-btn flex-grow-1" id="toolBrush"
+                                    onclick="setTool('brush')">
+                                    <i class="fa-solid fa-paint-brush"></i>
+                                    <span class="tool-label">[B]rush</span>
+                                </button>
+                                <input type="number" id="brushSizeInput"
+                                    class="form-control bg-dark text-white border-secondary text-left fw-bold px-1"
+                                    style="max-width: 52px" value="2" min="1" max="16"
+                                    oninput="updateBrushSize(this.value)" />
+                            </div>
 
-      <!-- Fill & Pick Row -->
-      <div class="btn-group w-100" role="group">
-        <button class="btn btn-outline-secondary tool-btn w-50" id="toolFill" onclick="setMapTool('fill')" title="Bucket Fill [F]">
-          <i class="fa-solid fa-fill-drip"></i>
-          <span class="tool-label">[F]ill</span>
-        </button>
-        <button class="btn btn-outline-secondary tool-btn w-50" id="toolEyedropper" onclick="setMapTool('pick')" title="Pick Tile [P]">
-          <i class="fa-solid fa-eye-dropper"></i>
-          <span class="tool-label">[P]ick</span>
-        </button>
-      </div>
-
-      <!-- Brush Tool Row with Number Input -->
-      <div class="input-group w-100">
-        <button class="btn btn-outline-secondary tool-btn flex-grow-1" id="toolBrush" onclick="setMapTool('brush')" title="Brush Tool [B]">
-          <i class="fa-solid fa-paint-brush"></i>
-          <span class="tool-label">[B]rush</span>
-        </button>
-        <input type="number" id="mapBrushSizeInput" class="form-control bg-dark text-white border-secondary text-center fw-bold px-1" style="max-width: 55px;" value="2" min="1" max="16" title="Brush Size" oninput="updateMapBrushSize(this.value)">
-      </div>
-
-    </div>
+                        </div>
   </div>
 </div>
 
 <!-- Transform Controls -->
-				<div class="card mb-3">
+				<div class="card mb-0">
 					<div class="card-header"><i
 							class="fa-solid fa-arrows-up-down-left-right text-success me-2"></i>Transform</div>
 					<div class="card-body">
@@ -245,7 +242,7 @@
       <div class="col-lg-8 col-md-8">
 
         <!-- Palette of Parsed Objects & Legend Items -->
-        <div class="card mb-3">
+        <div class="card mb-0">
           <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="fa-solid fa-cubes text-success me-2"></i>Palette</span>
             <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#objectsModal">
@@ -321,7 +318,7 @@
       <div class="col-lg-2 col-md-12">
 
         <!-- PuzzleScript Level ASCII Output -->
-        <div class="card mb-3">
+        <div class="card mb-0">
           <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="fa-solid fa-code text-success me-2"></i>Export Code</span>
             <button class="btn btn-outline-info btn-sm" onclick="copyMapLevelCode()">
@@ -342,7 +339,7 @@
         </div>
 
         <!-- Export Map Image -->
-        <div class="card mb-3">
+        <div class="card mb-0">
           <div class="card-header"><i class="fa-solid fa-download text-success me-2"></i>Export Image</div>
           <div class="card-body d-grid gap-2">
             <button class="btn btn-outline-secondary btn-sm" onclick="exportMapPNG()">
@@ -352,7 +349,7 @@
         </div>
 
                 <!-- Options -->
-        <div class="card mb-3">
+        <div class="card mb-0">
           <div class="card-header"><i class="fa-solid fa-sliders text-success me-2"></i> Options</div>
           <div class="card-body">
             <div class="form-check form-switch mb-2">
@@ -387,7 +384,7 @@
             Paste both the <code>OBJECTS</code> and <code>LEGEND</code> sections from your PuzzleScript game script
             below:
           </p>
-          <textarea id="objectsInputText" class="form-control ps-code-box p-2 mb-3" rows="14"
+          <textarea id="objectsInputText" class="form-control ps-code-box p-2 mb-0" rows="14"
             placeholder="========&#10;OBJECTS&#10;========&#10;&#10;Background .&#10;lightgreen green&#10;11111&#10;01111&#10;11101&#10;11111&#10;10111&#10;&#10;Wall #&#10;brown darkbrown&#10;00010&#10;11111&#10;01000&#10;11111&#10;00010&#10;&#10;Player P&#10;black orange white blue&#10;.000.&#10;.111.&#10;22222&#10;.333.&#10;.3.3.&#10;&#10;=======&#10;LEGEND&#10;=======&#10;&#10;. = Background&#10;# = Wall&#10;P = Player"></textarea>
           <div id="objectsParseError" class="alert alert-danger p-2 small d-none"></div>
         </div>
@@ -410,7 +407,7 @@
         </div>
         <div class="modal-body">
           <p class="text-secondary small mb-2">Paste ASCII level lines (using your defined legend characters):</p>
-          <textarea id="importLevelText" class="form-control ps-code-box p-2 mb-3" rows="8"
+          <textarea id="importLevelText" class="form-control ps-code-box p-2 mb-0" rows="8"
             placeholder="#####&#10;#P..#&#10;#.-.#&#10;#..O#&#10;#####"></textarea>
           <div id="importLevelError" class="alert alert-danger p-2 small d-none"></div>
         </div>
@@ -435,17 +432,7 @@
     </div>
   </div>
 
-  <!-- Footer Credit Banner -->
-  <footer class="mt-5 py-4 border-top border-secondary-subtle bg-dark text-center text-secondary small-2">
-    <div class="container">
-      <p class="mb-1"><strong>PuzzleScript Next Map Editor</strong></p>
-      <p class="mb-0 small">
-        Designed for the <a href="https://puzzlescriptnext.polyomino.com/" target="_blank"
-          class="text-info text-decoration-none">PuzzleScript Next game engine</a> by Justin
-        Riley, OhioFi
-      </p>
-    </div>
-  </footer>
+
 
   <!-- MODAL: Keyboard Shortcuts Help -->
 <div class="modal fade" id="mapHelpModal" tabindex="-1" aria-hidden="true">
@@ -513,6 +500,26 @@
     </div>
   </div>
 </div>
+
+    <hr class="mt-5 text-secondary">
+	<!-- Footer Credit Banner -->
+	<footer class="mt-0 py-4 border-top border-secondary-subtle bg-dark text-center text-secondary small-2">
+		<div class="container">
+			<p class="mb-1">
+				<strong>PuzzleScript Next Sprite Editor</strong>
+			</p>
+			<p class="mb-1 small">
+				Based on the original PuzzleScript Sprite Editor created by Owen Goss on <a
+					href="https://github.com/otrain13/PSSpriteEditor" target="_blank"
+					class="text-info text-decoration-none"><i class="fa-brands fa-github me-1"></i>GitHub</a>
+			</p>
+			<p class="mb-0 small">
+				Designed for the <a href="https://puzzlescriptnext.polyomino.com/" target="_blank"
+					class="text-info text-decoration-none">PuzzleScript Next game engine</a> by Justin
+				Riley, OhioFi
+			</p>
+		</div>
+	</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="mapscript.js"></script>

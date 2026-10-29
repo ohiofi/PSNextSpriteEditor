@@ -112,7 +112,7 @@ function setAnimType(type) {
         updateTypeRadioUI();
         return;
     }
-
+    document.getElementById("setupDimBadge").innerHTML = type.charAt(0).toUpperCase() + type.substring(1)
     pushUndoState();
     state.animType = type;
     updateTypeRadioUI();
@@ -470,7 +470,7 @@ function renderFramesGridUI() {
     const isRowOpen = state.openRows.includes(rIdx);
 
     const accordionItem = document.createElement('div');
-    accordionItem.className = `accordion-item bg-dark border ${isRowActive ? 'border-primary' : 'border-secondary'} mb-2 rounded`;
+    accordionItem.className = `accordion-item bg-dark border ${isRowActive ? 'border-primary' : 'border-secondary'}`;
 
     accordionItem.ondragover = (e) => handleDragOverRow(e, rIdx);
     accordionItem.ondragleave = (e) => handleDragLeaveRow(e, accordionItem);
@@ -482,7 +482,7 @@ function renderFramesGridUI() {
     accordionHeader.id = `headingRow${rIdx}`;
 
     const headerContent = document.createElement('div');
-    headerContent.className = 'd-flex align-items-center justify-content-between p-2 bg-dark rounded-top gap-2';
+    headerContent.className = 'd-flex align-items-center justify-content-between p-2 bg-dark gap-2';
 
     // Left: Accordion Toggle Button, Drag handle & Name input
     const leftDiv = document.createElement('div');
@@ -516,7 +516,7 @@ function renderFramesGridUI() {
       <button class="btn btn-outline-success btn-sm" onclick="addBlankFrame(${rIdx}); event.stopPropagation();" title="Add blank frame to this row">
         <i class="fa-solid fa-plus me-1"></i> Frame
       </button>
-      <button class="btn btn-outline-info btn-sm" onclick="duplicateFrame(${rIdx}, ${state.activeFrameIndex}); event.stopPropagation();" title="Duplicate active frame in row">
+      <button class="btn btn-outline-primary btn-sm" onclick="duplicateFrame(${rIdx}, ${state.activeFrameIndex}); event.stopPropagation();" title="Duplicate active frame in row">
         <i class="fa-solid fa-clone"></i>
       </button>
       <button class="btn btn-outline-danger btn-sm" onclick="deleteRow(${rIdx}, event)" title="Delete Row" ${state.rows.length <= 1 ? 'disabled' : ''}>
@@ -555,7 +555,7 @@ function renderFramesGridUI() {
     });
 
     const rowBody = document.createElement('div');
-    rowBody.className = 'accordion-body p-2 d-flex gap-2 overflow-x-auto align-items-center bg-dark-subtle rounded-bottom';
+    rowBody.className = 'accordion-body p-2 d-flex gap-2 overflow-x-auto align-items-center bg-dark-subtle';
     rowBody.style.minHeight = '115px';
 
     row.frames.forEach((framePixels, fIdx) => {
@@ -579,7 +579,7 @@ function renderFramesGridUI() {
       const thumbCanvas = document.createElement('canvas');
       thumbCanvas.width = 44;
       thumbCanvas.height = 44;
-      thumbCanvas.className = 'bg-checkerboard mx-auto mb-1 border border-secondary rounded-1';
+      thumbCanvas.className = 'bg-checkerboard mx-auto mb-1 border border-secondary';
       drawPixelsToCanvas(thumbCanvas, framePixels, state.width, state.height);
       frameCard.appendChild(thumbCanvas);
 
@@ -596,7 +596,7 @@ function renderFramesGridUI() {
         <button class="btn btn-outline-secondary p-0" onclick="moveFrame(${rIdx}, ${fIdx}, -1, event)" title="Move Left" ${fIdx === 0 ? 'disabled' : ''}>
           <i class="fa-solid fa-chevron-left small"></i>
         </button>
-        <button class="btn btn-outline-danger p-0" onclick="deleteFrame(${rIdx}, ${fIdx}, event)" title="Delete Frame">
+        <button class="btn btn-outline-secondary text-danger p-0" onclick="deleteFrame(${rIdx}, ${fIdx}, event)" title="Delete Frame">
           <i class="fa-solid fa-xmark small"></i>
         </button>
         <button class="btn btn-outline-secondary p-0" onclick="moveFrame(${rIdx}, ${fIdx}, 1, event)" title="Move Right" ${fIdx === row.frames.length - 1 ? 'disabled' : ''}>
@@ -912,6 +912,7 @@ function setTool(toolName) {
     if (toolName === 'fill') document.getElementById('toolFill')?.classList.add('active');
     if (toolName === 'pick') document.getElementById('toolEyedropper')?.classList.add('active');
     renderPaletteUI();
+    document.getElementById("toolsDimBadge").innerHTML = toolName.charAt(0).toUpperCase() + toolName.substring(1);
 }
 
 function updateBrushSize(val) {

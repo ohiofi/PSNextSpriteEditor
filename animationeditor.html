@@ -23,12 +23,10 @@
                 </span>
 
                 <div class="btn-group btn-group-sm" role="group" aria-label="Tool Navigation">
-                    <a href="index.html"
-                        class="btn btn-outline-secondary text-secondary d-flex align-items-center gap-1">
+                    <a href="index.html" class="btn btn-outline-primary d-flex align-items-center gap-1">
                         <i class="fa-solid fa-puzzle-piece"></i> Sprite
                     </a>
-                    <a href="mapeditor.html"
-                        class="btn btn-outline-secondary text-secondary d-flex align-items-center gap-1">
+                    <a href="mapeditor.html" class="btn btn-outline-success d-flex align-items-center gap-1">
                         <i class="fa-solid fa-map"></i> Map
                     </a>
                     <a href="animationeditor.html"
@@ -84,98 +82,115 @@
     <div class="container-fluid px-4 mt-3">
         <div class="row g-4">
 
-
             <!-- LEFT COLUMN: Grid Settings & Editing Tools -->
             <div id="leftColumn" class="col-lg-3 col-md-4">
 
+                <!-- ANIMATION SETUP CARD (Starts Open) -->
+                <div class="card mb-0 border-primary border-opacity-25">
+                    <div class="card-header d-flex align-items-center justify-content-between py-2"
+                        data-bs-toggle="collapse" data-bs-target="#animationSetupCardBody" aria-expanded="true"
+                        aria-controls="animationSetupCardBody" style="cursor: pointer;">
+                        <span class="fw-bold text-light">
+                            <i class="fa-solid fa-chevron-down collapse-icon text-secondary small me-2"></i>
+                            <i class="fa-solid fa-sliders text-primary me-2"></i>Animation Setup
+                        </span>
+                        <span class="badge bg-secondary small-2" id="setupDimBadge">Stationary</span>
+                    </div>
+                    <div class="card-body p-3 collapse show" id="animationSetupCardBody">
+                        <div class="row g-2 align-items-center">
+                            <!-- Animation Movement Type Selector -->
+                            <div class="col-lg-7 col-md-12">
+                                <label class="form-label small text-secondary fw-semibold mb-0">Movement Mode</label>
+                                <div class="btn-group btn-group-sm w-100" role="group"
+                                    aria-label="Movement Mode Selection">
+                                    <input type="radio" class="btn-check" name="mainAnimType" id="mainTypeStationary"
+                                        value="stationary" checked onchange="setAnimType('stationary')" />
+                                    <label class="btn btn-outline-primary btn-sm text-truncate" for="mainTypeStationary"
+                                        title="Stationary">
+                                        <i class="fa-solid fa-sync"></i>
+                                    </label>
 
+                                    <input type="radio" class="btn-check" name="mainAnimType" id="mainTypeProjectile"
+                                        value="projectile" onchange="setAnimType('projectile')" />
+                                    <label class="btn btn-outline-primary btn-sm text-truncate" for="mainTypeProjectile"
+                                        title="Projectile">
+                                        <i class="fa-solid fa-rocket"></i>
+                                    </label>
 
-               <!-- ANIMATION SETUP & TYPE SELECTOR CARD -->
-<div class="card mb-3 border-primary border-opacity-25">
-  <div class="card-header bg-dark d-flex align-items-center justify-content-between py-2">
-    <span class="fw-bold text-light"><i class="fa-solid fa-sliders text-primary me-2"></i>Animation Setup</span>
-  </div>
-  <div class="card-body p-3">
-    <div class="row g-3 align-items-center">
-      
-      <!-- Animation Movement Type Selector -->
-      <div class="col-lg-7 col-md-12">
-        <label class="form-label small text-secondary fw-semibold mb-1">Movement Mode</label>
-        <div class="btn-group btn-group-sm w-100" role="group" aria-label="Movement Mode Selection">
-          <input type="radio" class="btn-check" name="mainAnimType" id="mainTypeStationary" value="stationary" checked onchange="setAnimType('stationary')" />
-          <label class="btn btn-outline-primary btn-sm text-truncate" for="mainTypeStationary" title="Stationary">
-            <i class="fa-solid fa-sync"></i>
-          </label>
+                                    <input type="radio" class="btn-check" name="mainAnimType" id="mainTypeEnemy"
+                                        value="enemy" onchange="setAnimType('enemy')" />
+                                    <label class="btn btn-outline-primary btn-sm text-truncate" for="mainTypeEnemy"
+                                        title="Enemy">
+                                        <i class="fa-solid fa-ghost"></i>
+                                    </label>
 
-          <input type="radio" class="btn-check" name="mainAnimType" id="mainTypeProjectile" value="projectile" onchange="setAnimType('projectile')" />
-          <label class="btn btn-outline-primary btn-sm text-truncate" for="mainTypeProjectile" title="Projectile">
-            <i class="fa-solid fa-rocket"></i>
-          </label>
+                                    <input type="radio" class="btn-check" name="mainAnimType" id="mainTypePlayer"
+                                        value="player" onchange="setAnimType('player')" />
+                                    <label class="btn btn-outline-primary btn-sm text-truncate" for="mainTypePlayer"
+                                        title="Player">
+                                        <i class="fa-solid fa-person-walking"></i>
+                                    </label>
+                                </div>
+                            </div>
 
-          <input type="radio" class="btn-check" name="mainAnimType" id="mainTypeEnemy" value="enemy" onchange="setAnimType('enemy')" />
-          <label class="btn btn-outline-primary btn-sm text-truncate" for="mainTypeEnemy" title="Enemy">
-            <i class="fa-solid fa-ghost"></i>
-          </label>
+                            <!-- Animated Sprite Base Name -->
+                            <div class="col-lg-5 col-md-12">
+                                <label class="form-label small text-secondary fw-semibold mb-0" for="animNameInput"
+                                    id="animNameLabel">Sprite Name</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" id="animNameInput"
+                                        class="form-control form-control-sm bg-dark text-light border-secondary font-monospace"
+                                        value="PLAYER" oninput="updateAnimName(this.value)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-          <input type="radio" class="btn-check" name="mainAnimType" id="mainTypePlayer" value="player" onchange="setAnimType('player')" />
-          <label class="btn btn-outline-primary btn-sm text-truncate" for="mainTypePlayer" title="Player">
-            <i class="fa-solid fa-person-walking"></i>
-          </label>
-        </div>
-      </div>
-
-      <!-- Animated Sprite Base Name -->
-      <div class="col-lg-5 col-md-12">
-        <label class="form-label small text-secondary fw-semibold mb-1" for="animNameInput" id="animNameLabel">Sprite Name</label>
-        <div class="input-group input-group-sm">
-          <input type="text" id="animNameInput" class="form-control form-control-sm bg-dark text-light border-secondary font-monospace" value="PLAYER" oninput="updateAnimName(this.value)" />
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-
-
-                
-                <!-- Dimensions Card -->
-                <div class="card mb-3">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span><i class="fa-solid fa-border-all text-primary me-2"></i>Frame Dimensions</span>
+                <!-- Dimensions Card (Starts Closed) -->
+                <div class="card mb-0">
+                    <div class="card-header d-flex justify-content-between align-items-center py-2 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#dimensionsCardBody" aria-expanded="false"
+                        aria-controls="dimensionsCardBody" style="cursor: pointer;">
+                        <span>
+                            <i class="fa-solid fa-chevron-down collapse-icon text-secondary small me-2"></i>
+                            <i class="fa-solid fa-border-all text-primary me-2"></i>Frame Size
+                        </span>
                         <span class="badge bg-secondary small-2" id="gridDimBadge">5 x 5</span>
                     </div>
-                    <div class="card-body">
-                        <div class="row g-2 align-items-center mb-3">
+                    <div class="card-body p-3 collapse" id="dimensionsCardBody">
+                        <div class="row g-2 align-items-center mb-0">
                             <div class="col-6">
-                                <label for="gridWidth" class="form-label small text-secondary mb-1">Width (W)</label>
+                                <label for="gridWidth" class="form-label small text-secondary mb-0">Width (W)</label>
                                 <input type="number" id="gridWidth" class="form-control form-control-sm" min="1"
                                     max="64" value="5" />
                             </div>
                             <div class="col-6">
-                                <label for="gridHeight" class="form-label small text-secondary mb-1">Height (H)</label>
+                                <label for="gridHeight" class="form-label small text-secondary mb-0">Height (H)</label>
                                 <input type="number" id="gridHeight" class="form-control form-control-sm" min="1"
                                     max="64" value="5" />
                             </div>
                             <div class="col-12 mt-2">
                                 <button class="btn btn-outline-secondary btn-sm w-100" onclick="applyGridSize()">
-                                    <i class="fa-solid fa-check me-1"></i>
-                                    Resize All Frames
+                                    <i class="fa-solid fa-check me-1"></i> Resize All Frames
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-
-
-
-                <!-- Drawing Tools -->
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <i class="fa-solid fa-wrench text-primary me-2"></i>Tools
+                <!-- Tools Card (Starts Open) -->
+                <div class="card mb-0">
+                    <div class="card-header d-flex justify-content-between align-items-center py-2 "
+                        data-bs-toggle="collapse" data-bs-target="#toolsCardBody" aria-expanded="true"
+                        aria-controls="toolsCardBody" style="cursor: pointer;">
+                        <span>
+                            <i class="fa-solid fa-chevron-down collapse-icon text-secondary small me-2"></i>
+                            <i class="fa-solid fa-wrench text-primary me-2"></i>Tools
+                        </span>
+                        <span class="badge bg-secondary small-2" id="toolsDimBadge">Draw</span>
                     </div>
-                    <div class="card-body p-2 p-xl-3">
+                    <div class="card-body p-2 p-xl-3 collapse show" id="toolsCardBody">
                         <div class="d-grid gap-2">
                             <div class="btn-group w-100" role="group">
                                 <button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil"
@@ -189,39 +204,37 @@
                                     <span class="tool-label">[E]rase</span>
                                 </button>
                             </div>
-                            <div class="btn-group w-100" role="group">
+                            <!-- Row 2: Fill, Brush & Size -->
+                            <div class="input-group w-100">
                                 <button class="btn btn-outline-secondary tool-btn w-50" id="toolFill"
                                     onclick="setTool('fill')">
                                     <i class="fa-solid fa-fill-drip"></i>
                                     <span class="tool-label">[F]ill</span>
                                 </button>
-                                <button class="btn btn-outline-secondary tool-btn w-50" id="toolEyedropper"
-                                    onclick="setTool('pick')">
-                                    <i class="fa-solid fa-eye-dropper"></i>
-                                    <span class="tool-label">[P]ick</span>
-                                </button>
-                            </div>
-                            <div class="input-group w-100">
                                 <button class="btn btn-outline-secondary tool-btn flex-grow-1" id="toolBrush"
                                     onclick="setTool('brush')">
                                     <i class="fa-solid fa-paint-brush"></i>
                                     <span class="tool-label">[B]rush</span>
                                 </button>
                                 <input type="number" id="brushSizeInput"
-                                    class="form-control bg-dark text-white border-secondary text-center fw-bold px-1"
-                                    style="max-width: 55px" value="2" min="1" max="16"
+                                    class="form-control bg-dark text-white border-secondary text-left fw-bold px-1"
+                                    style="max-width: 52px" value="2" min="1" max="16"
                                     oninput="updateBrushSize(this.value)" />
                             </div>
+
                         </div>
                     </div>
                 </div>
 
-                <!-- Transform Controls Card -->
-                <div class="card mb-3">
-                    <div class="card-header">
+                <!-- Transform Controls Card (Starts Closed) -->
+                <div class="card mb-0">
+                    <div class="card-header py-2 collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#transformCardBody" aria-expanded="false" aria-controls="transformCardBody"
+                        style="cursor: pointer;">
+                        <i class="fa-solid fa-chevron-down collapse-icon text-secondary small me-2"></i>
                         <i class="fa-solid fa-arrows-up-down-left-right text-primary me-2"></i>Transform
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-3 collapse" id="transformCardBody">
                         <div class="row g-2 text-center">
                             <div class="col-3">
                                 <button class="btn btn-outline-secondary btn-sm w-100 tool-btn"
@@ -302,29 +315,21 @@
                     </div>
                 </div>
 
-                <!-- Preset Palettes -->
-                <div class="card mb-3">
-                    <div class="card-header">
+                <!-- Preset Palettes Card (Starts Closed) -->
+                <div class="card mb-0">
+                    <div class="card-header py-2 collapsed" data-bs-toggle="collapse" data-bs-target="#presetsCardBody"
+                        aria-expanded="false" aria-controls="presetsCardBody" style="cursor: pointer;">
+                        <i class="fa-solid fa-chevron-down collapse-icon text-secondary small me-2"></i>
                         <i class="fa-solid fa-swatchbook text-primary me-2"></i>Presets
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-3 collapse" id="presetsCardBody">
                         <select id="palettePresets" class="form-select form-select-sm"
                             onchange="loadPalettePreset(this.value)">
-                            <option value="" disabled selected>
-                                -- choose preset palette --
-                            </option>
-                            <option value="ps_classic">
-                                PuzzleScript Classic (4 Colors)
-                            </option>
-                            <option value="pico8">
-                                PICO-8 (16 Colors)
-                            </option>
-                            <option value="gameboy">
-                                Game Boy DMG (4 Colors)
-                            </option>
-                            <option value="c64">
-                                Commodore 64 (16 Colors)
-                            </option>
+                            <option value="" disabled selected>-- choose preset palette --</option>
+                            <option value="ps_classic">PuzzleScript Classic (4 Colors)</option>
+                            <option value="pico8">PICO-8 (16 Colors)</option>
+                            <option value="gameboy">Game Boy DMG (4 Colors)</option>
+                            <option value="c64">Commodore 64 (16 Colors)</option>
                         </select>
                     </div>
                 </div>
@@ -333,27 +338,38 @@
             <!-- MIDDLE COLUMN: Animation Setup, Multi-row Grid Sequence & Canvas Editor -->
             <div id="middleColumn" class="col-lg-5 col-md-8">
                 <!-- Palette Bar Card -->
-                <div class="card mb-3">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span><i class="fa-solid fa-palette text-primary me-2"></i>Palette</span>
-                        <button class="btn btn-outline-primary btn-sm fw-semibold" onclick="addColorSlot()">
+                <div class="card mb-0">
+                    <div class="card-header d-flex justify-content-between align-items-center py-2"
+                        data-bs-toggle="collapse" data-bs-target="#paletteCardBody" aria-expanded="true"
+                        aria-controls="paletteCardBody" style="cursor: pointer;">
+                        <span>
+                            <i class="fa-solid fa-chevron-down collapse-icon text-secondary small me-2"></i>
+                            <i class="fa-solid fa-palette text-primary me-2"></i>Palette
+                        </span>
+                        <button class="btn btn-outline-primary btn-sm fw-semibold"
+                            onclick="addColorSlot(); event.stopPropagation();">
                             <i class="fa-solid fa-plus me-1"></i> Add Color
                         </button>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-3 collapse show" id="paletteCardBody">
                         <div id="paletteContainer" class="d-flex flex-wrap gap-2 align-items-center">
                             <!-- Dynamically populated color slots -->
                         </div>
                     </div>
                 </div>
 
-                <!-- Main Frame Editor Canvas -->
-                <div class="card">
-                    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
-                        <span class="fw-semibold" id="activeFrameTitle"><i
-                                class="fa-solid fa-pen-to-square text-primary me-2"></i>Editing: Frame 0</span>
+                <!-- Main Frame Editor Canvas Card -->
+                <div class="card mb-0">
+                    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2 py-2"
+                        data-bs-toggle="collapse" data-bs-target="#canvasCardBody" aria-expanded="true"
+                        aria-controls="canvasCardBody" style="cursor: pointer;">
+                        <span class="fw-semibold" id="activeFrameTitle">
+                            <i class="fa-solid fa-chevron-down collapse-icon text-secondary small me-2"></i>
+                            <i class="fa-solid fa-pen-to-square text-primary me-2"></i>Editing: Frame 0
+                        </span>
 
-                        <div class="form-check form-switch mb-0 d-flex align-items-center gap-2">
+                        <div class="form-check form-switch mb-0 d-flex align-items-center gap-2"
+                            onclick="event.stopPropagation();">
                             <input class="form-check-input mt-0" type="checkbox" id="toggleGridLines" checked
                                 onchange="renderAll()" />
                             <label class="form-check-label small text-secondary" for="toggleGridLines">Show Grid
@@ -361,15 +377,13 @@
                         </div>
                     </div>
 
-                    <div class="card-body p-3 text-center">
+                    <div class="card-body p-3 text-center collapse show" id="canvasCardBody">
                         <div class="canvas-container bg-checkerboard mx-auto" id="canvasWrapper">
                             <canvas id="editorCanvas"></canvas>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-3 text-secondary small px-2">
-                            <span id="coordInfo"><i class="fa-solid fa-location-crosshairs me-1"></i>
-                                X: - , Y: -</span>
-                            <span><i class="fa-solid fa-hand-pointer me-1"></i>
-                                Click / Drag to draw active frame</span>
+                            <span id="coordInfo"><i class="fa-solid fa-location-crosshairs me-1"></i> X: - , Y: -</span>
+                            <span><i class="fa-solid fa-hand-pointer me-1"></i> Click / Drag to draw active frame</span>
                         </div>
                     </div>
                 </div>
@@ -378,113 +392,115 @@
             <!-- RIGHT COLUMN: Animation Preview & PuzzleScript Code Output -->
             <div id="rightColumn" class="col-lg-4 col-md-12">
 
+                <!-- Live Animation Preview Card -->
+                <div class="card mb-0">
+                    <div class="card-header d-flex justify-content-between align-items-center py-2"
+                        data-bs-toggle="collapse" data-bs-target="#livePreviewCardBody" aria-expanded="true"
+                        aria-controls="livePreviewCardBody" style="cursor: pointer;">
+                        <span>
+                            <i class="fa-solid fa-chevron-down collapse-icon text-secondary small me-2"></i>
+                            <i class="fa-solid fa-play text-primary me-2"></i>Live Animation
+                        </span>
+                        <div class="d-flex align-items-center gap-1" onclick="event.stopPropagation();">
+                            <label for="previewScaleSelect" class="form-label small text-secondary mb-0 me-1"><i
+                                    class="fa-solid fa-magnifying-glass"></i></label>
+                            <select id="previewScaleSelect" class="form-select form-select-sm" style="width: 72px;"
+                                onchange="setPreviewScale(this.value)">
+                                <option value="1">1x</option>
+                                <option value="2">2x</option>
+                                <option value="4" selected>4x</option>
+                                <option value="8">8x</option>
+                                <option value="16">16x</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body text-center collapse show" id="livePreviewCardBody">
 
-               <!-- Live Animation Preview Card -->
-<div class="card mb-3">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <span><i class="fa-solid fa-play text-primary me-2"></i>Live Animation</span>
-    <!-- <span class="badge bg-dark border border-secondary" id="previewScaleBadge">4x Scale</span> -->
-     <div class="d-flex align-items-center gap-1">
-        <label for="previewScaleSelect" class="form-label small text-secondary mb-0 me-1"><i class="fa-solid fa-magnifying-glass"></i></label>
-        <select id="previewScaleSelect" class="form-select form-select-sm" style="width: 72px;"
-          onchange="setPreviewScale(this.value)">
-          <option value="1">1x</option>
-          <option value="2">2x</option>
-          <option value="4" selected>4x</option>
-          <option value="8">8x</option>
-          <option value="16">16x</option>
-        </select>
-      </div>
-  </div>
-  <div class="card-body text-center">
+                        <!-- Preview Canvas -->
+                        <div id="previewContainer"
+                            class="p-3 mb-1 bg-checkerboard d-flex justify-content-center align-items-center"
+                            style="min-height: 140px; max-height: 200px; overflow: auto;">
+                            <canvas id="previewCanvas"></canvas>
+                        </div>
 
-    <!-- Preview Canvas -->
-    <div id="previewContainer" class="p-3 mb-3 bg-checkerboard d-flex justify-content-center align-items-center"
-      style="min-height: 140px; max-height: 200px; overflow: auto;">
-      <canvas id="previewCanvas"></canvas>
-    </div>
+                        <!-- Animation Playback Controls -->
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-0">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Playback Controls">
+                                <button class="btn btn-outline-primary" id="btnPlayPause" onclick="togglePlayPause()">
+                                    <i class="fa-solid fa-pause"></i>
+                                </button>
+                                <button class="btn btn-outline-primary" id="btnStepNext" onclick="stepNextRow()"
+                                    title="Next Frame">
+                                    <i class="fa-solid fa-forward"></i>
+                                </button>
+                            </div>
 
-    <!-- Animation Playback Controls -->
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
-      <div class="btn-group btn-group-sm" role="group" aria-label="Playback Controls">
-        <button class="btn btn-outline-primary" id="btnPlayPause" onclick="togglePlayPause()">
-          <i class="fa-solid fa-pause"></i>
-        </button>
-        <button class="btn btn-outline-primary" id="btnStepNext" onclick="stepNextRow()" title="Next Frame">
-          <i class="fa-solid fa-forward"></i>
-        </button>
-      </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <label for="animIntervalInput" class="form-label small text-secondary mb-0 me-1"><i
+                                        class="fa-solid fa-stopwatch"></i></label>
+                                <input type="number" id="animIntervalInput"
+                                    class="form-control form-control-sm bg-dark text-white border-secondary text-center"
+                                    style="width: 70px;" value="0.2" step="0.05" min="0.01" max="5.0"
+                                    onchange="updateAnimInterval(this.value)" />
+                            </div>
 
-      <div class="d-flex align-items-center gap-1">
-        <label for="animIntervalInput" class="form-label small text-secondary mb-0 me-1"><i class="fa-solid fa-stopwatch"></i></label>
-        <input type="number" id="animIntervalInput"
-          class="form-control form-control-sm bg-dark text-white border-secondary text-center"
-          style="width: 70px;" value="0.2" step="0.05" min="0.01" max="5.0"
-          onchange="updateAnimInterval(this.value)">
-      </div>
+                            <div class="form-check form-switch mb-0 d-inline-flex align-items-center gap-1 ps-0">
+                                <input class="form-check-input ms-0 mt-0" type="checkbox" id="toggleWallpaper"
+                                    onchange="toggleWallpaperMode(this.checked)" />
+                                <label class="form-check-label small text-secondary text-nowrap"
+                                    for="toggleWallpaper"><i class="fa-solid fa-users"></i></label>
+                            </div>
+                        </div>
 
-      <div class="form-check form-switch mb-0 d-inline-flex align-items-center gap-1 ps-0">
-        <input class="form-check-input ms-0 mt-0" type="checkbox" id="toggleWallpaper"
-          onchange="toggleWallpaperMode(this.checked)">
-        <label class="form-check-label small text-secondary text-nowrap" for="toggleWallpaper"><i class="fa-solid fa-users"></i></i></label>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
+                    </div>
+                </div>
 
                 <!-- ANIMATION FRAMES GRID CARD -->
-                <div class="card mb-3">
-                    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <div class="card mb-0">
+                    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2 py-2"
+                        data-bs-toggle="collapse" data-bs-target="#frameStripCardBody" aria-expanded="true"
+                        aria-controls="frameStripCardBody" style="cursor: pointer;">
                         <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-chevron-down collapse-icon text-secondary small"></i>
                             <i class="fa-solid fa-film text-primary"></i>
                             <span class="fw-bold">Frame Strip Grid</span>
                         </div>
 
                         <!-- Global Actions -->
-                        <div class="btn-group btn-group-sm" role="group">
+                        <div class="btn-group btn-group-sm" role="group" onclick="event.stopPropagation();">
                             <button class="btn btn-outline-success" onclick="addRow()">
-                                <i class="fa-solid fa-plus me-1"></i> Add
-                                Row
+                                <i class="fa-solid fa-plus me-1"></i> Add Row
                             </button>
                             <button class="btn btn-outline-primary" data-bs-toggle="modal"
                                 data-bs-target="#importAnimModal">
-                                <i class="fa-solid fa-file-import me-1"></i>
-                                Import
+                                <i class="fa-solid fa-file-import me-1"></i> Import
                             </button>
                         </div>
                     </div>
 
                     <!-- Dynamic Multi-Row Grid Container -->
-                    <div class="card-body p-2">
-                        <div id="framesGridContainer" class="d-flex flex-column gap-2">
+                    <div class="card-body p-2 collapse show" id="frameStripCardBody">
+                        <div id="framesGridContainer" class="d-flex flex-column">
                             <!-- Dynamically rendered rows & frames with Drag and Drop -->
                         </div>
                     </div>
                 </div>
 
-
-
-
-
-
-
-
                 <!-- Export Code Card -->
-                <div class="card mb-3">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span><i class="fa-solid fa-code text-primary me-2"></i>Export Code</span>
-                    </div>
-                    <div class="card-body text-center d-grid gap-2">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportModal"
+                <div class="card mb-0">
+                    <div class="card-header d-flex justify-content-between align-items-center py-2">
+                        <span>
+
+                            <i class="fa-solid fa-code text-primary me-2"></i>Export
+                        </span>
+                        <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#exportModal"
                             onclick="generateExportCode()">
-                            <i class="fa-solid fa-file-export me-1"></i>
-                            Export PuzzleScript Code
+                            <i class="fa-solid fa-file-export me-1"></i> Get Code
                         </button>
                     </div>
+
                 </div>
+
             </div>
         </div>
     </div>
@@ -502,10 +518,9 @@
                 </div>
                 <div class="modal-body">
                     <p class="text-secondary small mb-2">
-                        Paste one or more PuzzleScript sprite definitions
-                        below:
+                        Paste one or more PuzzleScript sprite definitions below:
                     </p>
-                    <textarea id="importAnimCodeArea" class="form-control ps-code-box p-2 mb-3" rows="8"
+                    <textarea id="importAnimCodeArea" class="form-control ps-code-box p-2 mb-0" rows="8"
                         placeholder="PLAYER_MovingRight_frame0&#10;#ff0000 #0000ff&#10;.000.&#10;00100&#10;.000.&#10;&#10;PLAYER_MovingRight_frame1&#10;#ff0000 #0000ff&#10;.000.&#10;00010&#10;.000."></textarea>
                     <div id="importAnimErrorAlert" class="alert alert-danger p-2 small d-none"></div>
                 </div>
@@ -535,6 +550,8 @@
         </div>
     </div>
 
+
+
     <!-- MODAL: Export PuzzleScript Animation Code -->
     <div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -550,42 +567,38 @@
                 </div>
                 <div class="modal-body">
                     <!-- Movement Type Selection inside Export Modal -->
-                    <div class="mb-3">
+                    <div class="mb-0">
                         <label class="form-label fw-bold text-light mb-2">Sprite Movement Mode</label>
                         <div class="btn-group w-100" role="group">
                             <input type="radio" class="btn-check" name="modalAnimType" id="modalTypeStationary"
                                 value="stationary" onchange="setAnimType('stationary')" />
                             <label class="btn btn-outline-primary" for="modalTypeStationary">
-                                <i class="fa-solid fa-sync me-1"></i>
-                                Stationary
+                                <i class="fa-solid fa-sync me-1"></i> Stationary
                             </label>
 
                             <input type="radio" class="btn-check" name="modalAnimType" id="modalTypeProjectile"
                                 value="projectile" onchange="setAnimType('projectile')" />
                             <label class="btn btn-outline-primary" for="modalTypeProjectile">
-                                <i class="fa-solid fa-rocket me-1"></i>
-                                Projectile
+                                <i class="fa-solid fa-rocket me-1"></i> Projectile
                             </label>
 
                             <input type="radio" class="btn-check" name="modalAnimType" id="modalTypeEnemy" value="enemy"
                                 onchange="setAnimType('enemy')" />
                             <label class="btn btn-outline-primary" for="modalTypeEnemy">
-                                <i class="fa-solid fa-ghost me-1"></i>
-                                Enemy
+                                <i class="fa-solid fa-ghost me-1"></i> Enemy
                             </label>
 
                             <input type="radio" class="btn-check" name="modalAnimType" id="modalTypePlayer"
                                 value="player" onchange="setAnimType('player')" />
                             <label class="btn btn-outline-primary" for="modalTypePlayer">
-                                <i class="fa-solid fa-person-walking me-1"></i>
-                                Player
+                                <i class="fa-solid fa-person-walking me-1"></i> Player
                             </label>
                         </div>
                     </div>
 
                     <hr class="border-secondary opacity-25" />
 
-                    <div class="mb-3 small alert alert-dark border-secondary text-secondary" id="spriteTypeDescription">
+                    <div class="mb-0 small alert alert-dark border-secondary text-secondary" id="spriteTypeDescription">
                         Exporting animation rules based on the active setup.
                     </div>
 
@@ -594,13 +607,12 @@
                         <!-- 0. PRELUDE -->
                         <div class="card mb-2 border-secondary">
                             <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                                <span class="small fw-bold text-info"><i class="fa-solid fa-play-circle me-1"></i>
-                                    PRELUDE (the section above
-                                    OBJECTS)</span>
+                                <span class="small fw-bold text-info">
+                                    <i class="fa-solid fa-play-circle me-1"></i> PRELUDE (the section above OBJECTS)
+                                </span>
                                 <button class="btn btn-outline-info btn-sm small-2 m-1 float-end"
                                     onclick="copyField('exportPreludeCode')">
-                                    <i class="fa-solid fa-copy me-1"></i>
-                                    Copy
+                                    <i class="fa-solid fa-copy me-1"></i> Copy
                                 </button>
                             </div>
                             <div class="card-body p-2">
@@ -612,12 +624,12 @@
                         <!-- 1. OBJECTS -->
                         <div class="card mb-2 border-secondary">
                             <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                                <span class="small fw-bold text-info"><i class="fa-solid fa-cubes me-1"></i>
-                                    OBJECTS</span>
+                                <span class="small fw-bold text-info">
+                                    <i class="fa-solid fa-cubes me-1"></i> OBJECTS
+                                </span>
                                 <button class="btn btn-outline-info btn-sm small-2 m-1 float-end"
                                     onclick="copyField('exportObjectsCode')">
-                                    <i class="fa-solid fa-copy me-1"></i>
-                                    Copy
+                                    <i class="fa-solid fa-copy me-1"></i> Copy
                                 </button>
                             </div>
                             <div class="card-body p-2">
@@ -629,12 +641,12 @@
                         <!-- 2. LEGEND -->
                         <div class="card mb-2 border-secondary">
                             <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                                <span class="small fw-bold text-info"><i class="fa-solid fa-list me-1"></i>
-                                    LEGEND</span>
+                                <span class="small fw-bold text-info">
+                                    <i class="fa-solid fa-list me-1"></i> LEGEND
+                                </span>
                                 <button class="btn btn-outline-info btn-sm small-2 m-1 float-end"
                                     onclick="copyField('exportLegendCode')">
-                                    <i class="fa-solid fa-copy me-1"></i>
-                                    Copy
+                                    <i class="fa-solid fa-copy me-1"></i> Copy
                                 </button>
                             </div>
                             <div class="card-body p-2">
@@ -646,15 +658,12 @@
                         <!-- 3. COLLISIONLAYERS -->
                         <div class="card mb-2 border-secondary">
                             <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                                <span class="small fw-bold text-info"><i class="fa-solid fa-layer-group me-1"></i>
-                                    COLLISIONLAYERS</span>
-                                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end" onclick="
-                                            copyField(
-                                                'exportCollisionLayersCode',
-                                            )
-                                        ">
-                                    <i class="fa-solid fa-copy me-1"></i>
-                                    Copy
+                                <span class="small fw-bold text-info">
+                                    <i class="fa-solid fa-layer-group me-1"></i> COLLISIONLAYERS
+                                </span>
+                                <button class="btn btn-outline-info btn-sm small-2 m-1 float-end"
+                                    onclick="copyField('exportCollisionLayersCode')">
+                                    <i class="fa-solid fa-copy me-1"></i> Copy
                                 </button>
                             </div>
                             <div class="card-body p-2">
@@ -666,12 +675,12 @@
                         <!-- 4. RULES -->
                         <div class="card border-secondary">
                             <div class="card-header bg-dark d-flex justify-content-between align-items-center py-2">
-                                <span class="small fw-bold text-info"><i class="fa-solid fa-gears me-1"></i>
-                                    RULES</span>
+                                <span class="small fw-bold text-info">
+                                    <i class="fa-solid fa-gears me-1"></i> RULES
+                                </span>
                                 <button class="btn btn-outline-info btn-sm small-2 m-1 float-end"
                                     onclick="copyField('exportRulesCode')">
-                                    <i class="fa-solid fa-copy me-1"></i>
-                                    Copy
+                                    <i class="fa-solid fa-copy me-1"></i> Copy
                                 </button>
                             </div>
                             <div class="card-body p-2">
@@ -682,13 +691,33 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-                        Close
-                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+    
     </div>
+
+
+                <hr class="mt-5 text-secondary">
+	<!-- Footer Credit Banner -->
+	<footer class="mt-0 py-4 border-top border-secondary-subtle bg-dark text-center text-secondary small-2">
+		<div class="container">
+			<p class="mb-1">
+				<strong>PuzzleScript Next Animation Editor</strong>
+			</p>
+			<p class="mb-1 small">
+				Based on the original PuzzleScript Sprite Editor created by Owen Goss on <a
+					href="https://github.com/otrain13/PSSpriteEditor" target="_blank"
+					class="text-info text-decoration-none"><i class="fa-brands fa-github me-1"></i>GitHub</a>
+			</p>
+			<p class="mb-0 small">
+				Designed for the <a href="https://puzzlescriptnext.polyomino.com/" target="_blank"
+					class="text-info text-decoration-none">PuzzleScript Next game engine</a> by Justin
+				Riley, OhioFi
+			</p>
+		</div>
+	</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="animationscript.js"></script>

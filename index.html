@@ -144,40 +144,37 @@
   <div class="card-header"><i class="fa-solid fa-wrench text-primary me-2"></i>Tools</div>
   <div class="card-body p-2 p-xl-3">
     <div class="d-grid gap-2">
-      <!-- Draw & Erase Row -->
-      <div class="btn-group w-100" role="group">
-        <button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil" onclick="setTool('draw')" title="Draw Tool [D]">
-          <i class="fa-solid fa-pencil"></i>
-          <span class="tool-label">[D]raw</span>
-        </button>
-        <button class="btn btn-outline-secondary tool-btn w-50" id="toolEraser" onclick="setTool('erase')" title="Erase Tool [E]">
-          <i class="fa-solid fa-eraser"></i>
-          <span class="tool-label">[E]rase</span>
-        </button>
-      </div>
+                            <div class="btn-group w-100" role="group">
+                                <button class="btn btn-outline-secondary tool-btn active w-50" id="toolPencil"
+                                    onclick="setTool('draw')">
+                                    <i class="fa-solid fa-pencil"></i>
+                                    <span class="tool-label">[D]raw</span>
+                                </button>
+                                <button class="btn btn-outline-secondary tool-btn w-50" id="toolEraser"
+                                    onclick="setTool('erase')">
+                                    <i class="fa-solid fa-eraser"></i>
+                                    <span class="tool-label">[E]rase</span>
+                                </button>
+                            </div>
+                            <!-- Row 2: Fill, Brush & Size -->
+                            <div class="input-group w-100">
+                                <button class="btn btn-outline-secondary tool-btn w-50" id="toolFill"
+                                    onclick="setTool('fill')">
+                                    <i class="fa-solid fa-fill-drip"></i>
+                                    <span class="tool-label">[F]ill</span>
+                                </button>
+                                <button class="btn btn-outline-secondary tool-btn flex-grow-1" id="toolBrush"
+                                    onclick="setTool('brush')">
+                                    <i class="fa-solid fa-paint-brush"></i>
+                                    <span class="tool-label">[B]rush</span>
+                                </button>
+                                <input type="number" id="brushSizeInput"
+                                    class="form-control bg-dark text-white border-secondary text-left fw-bold px-1"
+                                    style="max-width: 52px" value="2" min="1" max="16"
+                                    oninput="updateBrushSize(this.value)" />
+                            </div>
 
-      <!-- Fill & Pick Row -->
-      <div class="btn-group w-100" role="group">
-        <button class="btn btn-outline-secondary tool-btn w-50" id="toolFill" onclick="setTool('fill')" title="Fill Tool [F]">
-          <i class="fa-solid fa-fill-drip"></i>
-          <span class="tool-label">[F]ill</span>
-        </button>
-        <button class="btn btn-outline-secondary tool-btn w-50" id="toolEyedropper" onclick="setTool('pick')" title="Color Picker Tool [P]">
-          <i class="fa-solid fa-eye-dropper"></i>
-          <span class="tool-label">[P]ick</span>
-        </button>
-      </div>
-
-      <!-- Brush Tool Row with Number Input -->
-      <div class="input-group w-100">
-        <button class="btn btn-outline-secondary tool-btn flex-grow-1" id="toolBrush" onclick="setTool('brush')" title="Brush Tool [B]">
-          <i class="fa-solid fa-paint-brush"></i>
-          <span class="tool-label">[B]rush</span>
-        </button>
-        <input type="number" id="brushSizeInput" class="form-control bg-dark text-white border-secondary text-center fw-bold px-1" style="max-width: 55px;" value="2" min="1" max="16" title="Brush Size" oninput="updateBrushSize(this.value)">
-      </div>
-
-    </div>
+                        </div>
   </div>
 </div>
 
@@ -520,8 +517,9 @@
 			</div>
 		</div>
 	</div>
+	<hr class="mt-5 text-secondary">
 	<!-- Footer Credit Banner -->
-	<footer class="mt-5 py-4 border-top border-secondary-subtle bg-dark text-center text-secondary small-2">
+	<footer class="mt-0 py-4 border-top border-secondary-subtle bg-dark text-center text-secondary small-2">
 		<div class="container">
 			<p class="mb-1">
 				<strong>PuzzleScript Next Sprite Editor</strong>

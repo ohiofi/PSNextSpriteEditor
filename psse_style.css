@@ -33,12 +33,33 @@ a:hover {
   color: #0d6efd;
 }
 
+/* Remove rounded corners from all accordions and accordion elements */
+.accordion,
+.accordion-item,
+.accordion-header,
+.accordion-button,
+.accordion-collapse,
+.accordion-body {
+  border-radius: 0 !important;
+}
+
 body {
 	/* font-family: 'Inter', sans-serif; */
 	font-family: monospace;
 	background-color: var(--bg-dark-surface);
 	color: #e2e8f0;
 	min-height: 100vh;
+}
+
+/* Hide number input spin buttons to prevent text overlap in narrow toolbars */
+#brushSizeInput::-webkit-inner-spin-button,
+#brushSizeInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#brushSizeInput {
+  -moz-appearance: textfield; /* Firefox */
 }
 
 .card {
@@ -58,6 +79,20 @@ body {
 
 .card-header:first-child {
 	border-radius: 0px;
+}
+
+/* Make card headers clickable and animate the caret icon */
+.card-header[data-bs-toggle="collapse"] {
+  cursor: pointer;
+  user-select: none;
+}
+
+.card-header[data-bs-toggle="collapse"] .collapse-icon {
+  transition: transform 0.2s ease;
+}
+
+.card-header[data-bs-toggle="collapse"].collapsed .collapse-icon {
+  transform: rotate(-90deg);
 }
 
 /* Pixelated Canvas Styles */
