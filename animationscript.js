@@ -106,13 +106,16 @@ function initAnimState(w, h) {
     renderAll();
 }
 
-/* Set Animation Type (Stationary, Projectile, Walking) */
+/* Set Animation Type (Stationary, Projectile, Enemy) */
 function setAnimType(type) {
     if (state.animType === type && state.rows.length > 0) {
         updateTypeRadioUI();
         return;
     }
-    document.getElementById("setupDimBadge").innerHTML = type.charAt(0).toUpperCase() + type.substring(1)
+    document.getElementById("setupDimBadge").innerHTML = type.charAt(0).toUpperCase() + type.substring(1);
+    // const badge = document.getElementById('modalAnimTypeBadge');
+    // if (badge) badge.innerText = type.toUpperCase();
+    // console.log(badge.innerText)
     pushUndoState();
     state.animType = type;
     updateTypeRadioUI();
@@ -120,7 +123,7 @@ function setAnimType(type) {
     const baseName = state.animName || 'PLAYER';
     const defaultSuffixes = ['_MovingRight', '_MovingLeft', '_MovingUp', '_MovingDown'];
 
-    if (type === 'projectile' || type === 'walking') {
+    if (type === 'projectile' || type === 'enemy' || type === 'player') {
         // If we only have 1 row or non-directional rows, populate/update standard 4 directional rows
         const firstFramePixels = (state.rows[0] && state.rows[0].frames[0])
             ? [...state.rows[0].frames[0]]
@@ -173,9 +176,15 @@ function updateTypeRadioUI() {
     'projectile': document.getElementById('mainTypeProjectile'),
     'enemy': document.getElementById('mainTypeEnemy'),
     'player': document.getElementById('mainTypePlayer'),
-    'walking': document.getElementById('mainTypePlayer')
   };
   if (mainRadios[t]) mainRadios[t].checked = true;
+  const modalRadios = {
+    'stationary': document.getElementById('modalTypeStationary'),
+    'projectile': document.getElementById('modalTypeProjectile'),
+    'enemy': document.getElementById('modalTypeEnemy'),
+    'player': document.getElementById('modalTypePlayer'),
+  };
+  if (modalRadios[t]) modalRadios[t].checked = true;
 
   // Dynamic Input Label Map
   const labelMap = {
@@ -183,7 +192,6 @@ function updateTypeRadioUI() {
     'projectile': 'Projectile Name',
     'enemy': 'Enemy Name',
     'player': 'Player Name',
-    'walking': 'Player Name'
   };
 
   const animNameLabel = document.getElementById('animNameLabel');
@@ -191,8 +199,7 @@ function updateTypeRadioUI() {
     animNameLabel.innerText = labelMap[t];
   }
 
-  const badge = document.getElementById('modalAnimTypeBadge');
-  if (badge) badge.innerText = t.toUpperCase();
+  
 }
 
 /* Update Base Sprite Name */
@@ -1520,33 +1527,75 @@ function showToast(msg) {
     }
 }
 
-/* Generate Custom PuzzleScript Export Code for Stationary / Projectile / Walking */
+
+
+/* Generate Custom PuzzleScript Export Code for Stationary / Projectile / Enemy */
 function generateExportCode() {
-    const animType = state.animType || 'stationary';
+
     const animName = (state.animName || 'PLAYER').trim().replace(/[^a-z0-9_]/gi, '_');
-    const colorsLine = state.palette.join(' ');
-    const interval = state.animInterval || 0.2;
+    const animType = state.animType || 'stationary';
+    const exportCode = {
+        animName: animName,
+        animType: animType,
+        description:'',
+        prelude:'',
+        objects:'',
+        legend:'',
+        collision: '',
+        rules: '',
+        interval: state.animInterval || 0.2,
+        colorsLine: state.palette.join(' '),
+        mapChar: animName.charAt(0).toUpperCase() || 'P'
+    }
+    if(animType === 'player'){
+        getExportCodeForPlayer(exportCode);
+    }
+    else if (animType === 'enemy') {
+        getExportCodeForEnemy(exportCode);
+    }
+    else if (animType === 'projectile') {
+        getExportCodeForProjectile(exportCode);
 
-    let descriptionText = '';
-    let preludeCode = '';
-    let objectsCode = '';
-    let legendCode = '';
-    let collisionCode = '';
-    let rulesCode = '';
+    } else {
+        getExportCodeForStationary(exportCode);
+    }
 
-    const mapChar = animName.charAt(0).toUpperCase() || 'P';
+    // Update UI elements
+    if (document.getElementById('modalAnimTypeBadge')) {
+        document.getElementById('modalAnimTypeBadge').innerText = exportCode.animType.toUpperCase();
+    }
+    if (document.getElementById('spriteTypeDescription')) {
+        document.getElementById('spriteTypeDescription').innerText = exportCode.description;
+    }
+    if (document.getElementById('exportPreludeCode')) {
+        document.getElementById('exportPreludeCode').value = exportCode.prelude.trim();
+    }
+    if (document.getElementById('exportObjectsCode')) {
+        document.getElementById('exportObjectsCode').value = exportCode.objects.trim();
+    }
+    if (document.getElementById('exportLegendCode')) {
+        document.getElementById('exportLegendCode').value = exportCode.legend.trim();
+    }
+    if (document.getElementById('exportCollisionLayersCode')) {
+        document.getElementById('exportCollisionLayersCode').value = exportCode.collision.trim();
+    }
+    if (document.getElementById('exportRulesCode')) {
+        document.getElementById('exportRulesCode').value = exportCode.rules.trim();
+    }
+}
 
-    if (animType === 'walking') {
-        descriptionText = `These settings generate walking NPC movement and directional animation rules for characters moving across the grid when the player moves.`;
-        preludeCode = `realtime_interval ${interval}`;
+function getExportCodeForEnemy(exportCode){
+    
+    exportCode.description = `These settings are general movement and animation rules for enemies/characters that should move only when the player moves.`;
+        exportCode.prelude = `realtime_interval ${exportCode.interval}`;
 
-        objectsCode = `( marker to prevent multiple frames per clock tick )\n${animName}_hasAnimated\ntransparent\n\n`;
+        exportCode.objects = `( marker to prevent multiple frames per clock tick )\n${exportCode.animName}_hasAnimated\ntransparent\n\n`;
 
         let allRowClassifications = [];
         let firstFrameName = '';
 
         state.rows.forEach((row, rIdx) => {
-            const rowName = (row.name || `${animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
+            const rowName = (row.name || `${exportCode.animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
             let frameNamesInRow = [];
 
             row.frames.forEach((framePixels, fIdx) => {
@@ -1563,23 +1612,23 @@ function generateExportCode() {
                     }
                     gridLines.push(rowStr);
                 }
-                objectsCode += `${frameName}\n${colorsLine}\n${gridLines.join('\n')}\n\n`;
+                exportCode.objects += `${frameName}\n${exportCode.colorsLine}\n${gridLines.join('\n')}\n\n`;
             });
 
             allRowClassifications.push(`${rowName} = ${frameNamesInRow.join(' or ')}`);
         });
 
-        const allRowNames = state.rows.map((r, i) => (r.name || `${animName}_Row${i}`).trim().replace(/[^a-z0-9_]/gi, '_'));
-        legendCode = `( classify frames into directional states )\n${allRowClassifications.join('\n')}\n\n( group all walking states into main ${animName} alias )\n${animName} = ${allRowNames.join(' or ')}\n\n( use ${mapChar} to place starting ${animName} on map )\n${mapChar} = ${firstFrameName || `${animName}_MovingRight_frame0`}`;
+        const allRowNames = state.rows.map((r, i) => (r.name || `${exportCode.animName}_Row${i}`).trim().replace(/[^a-z0-9_]/gi, '_'));
+        exportCode.legend = `( classify frames into directional states )\n${allRowClassifications.join('\n')}\n\n( group all directional states into main ${exportCode.animName} alias )\n${exportCode.animName} = ${allRowNames.join(' or ')}\n\n( use ${exportCode.mapChar} to place starting ${exportCode.animName} on map )\n${exportCode.mapChar} = ${firstFrameName || `${exportCode.animName}_MovingRight_frame0`}`;
 
-        collisionCode = `${animName}_hasAnimated ( separate collision layer for animation state lock )\n\n( list the object that collide with this NPC )\n${animName}_obstacle = Wall or Target or Crate or Player or ${animName}`;
+        exportCode.collision = `${exportCode.animName}_hasAnimated ( separate collision layer for animation state lock )\n\n( list the object that collide with this NPC )\n${exportCode.animName}_obstacle = Wall or Target or Crate or Player or ${exportCode.animName}`;
 
         // RULES SECTION
-        rulesCode = `( clear animation marker at end of turn )\nlate [ ${animName}_hasAnimated ] -> []\n\n( ${animName} NPC only moves when the player moves )\n`;
+        exportCode.rules = `( clear animation marker at end of turn )\nlate [ ${exportCode.animName}_hasAnimated ] -> []\n\n( ${exportCode.animName} NPC only moves when the player moves )\n`;
 
         // 1. NPC movement triggers based on player movement
         state.rows.forEach((row) => {
-            const rowName = (row.name || `${animName}_Row`).trim().replace(/[^a-z0-9_]/gi, '_');
+            const rowName = (row.name || `${exportCode.animName}_Row`).trim().replace(/[^a-z0-9_]/gi, '_');
             const lowerName = rowName.toLowerCase();
 
             let dir = 'right';
@@ -1587,35 +1636,35 @@ function generateExportCode() {
             else if (lowerName.includes('up')) dir = 'up';
             else if (lowerName.includes('down')) dir = 'down';
 
-            rulesCode += `[ moving Player ] [ ${rowName} ] -> [ moving Player ] [ ${dir} ${rowName} ]\n`;
+            exportCode.rules += `[ moving Player ] [ ${rowName} ] -> [ moving Player ] [ ${dir} ${rowName} ]\n`;
         });
 
-        rulesCode += `\n`;
+        exportCode.rules += `\n`;
 
         // 2. Standalone frame animation cycles
         state.rows.forEach((row) => {
-            const rowName = (row.name || `${animName}_Row`).trim().replace(/[^a-z0-9_]/gi, '_');
+            const rowName = (row.name || `${exportCode.animName}_Row`).trim().replace(/[^a-z0-9_]/gi, '_');
             const frameCount = row.frames.length;
 
-            rulesCode += `( ${rowName} walking animation cycle )\n`;
+            exportCode.rules += `( ${rowName} enemy animation cycle )\n`;
             if (frameCount > 1) {
                 for (let fIdx = 0; fIdx < frameCount; fIdx++) {
                     const nextIdx = (fIdx + 1) % frameCount;
-                    rulesCode += `[ ${rowName}_frame${fIdx} no ${animName}_hasAnimated ] -> [ ${rowName}_frame${nextIdx} ${animName}_hasAnimated ]\n`;
+                    exportCode.rules += `[ ${rowName}_frame${fIdx} no ${exportCode.animName}_hasAnimated ] -> [ ${rowName}_frame${nextIdx} ${exportCode.animName}_hasAnimated ]\n`;
                 }
             }
-            rulesCode += `\n`;
+            exportCode.rules += `\n`;
         });
 
         // Helper to resolve directional row names for collision turning
         function getRowNameForDir(d) {
             const found = state.rows.find(r => r.name.toLowerCase().includes(d));
             if (found) return found.name.trim().replace(/[^a-z0-9_]/gi, '_');
-            if (d === 'right') return `${animName}_MovingRight`;
-            if (d === 'left') return `${animName}_MovingLeft`;
-            if (d === 'up') return `${animName}_MovingUp`;
-            if (d === 'down') return `${animName}_MovingDown`;
-            return `${animName}_${d}`;
+            if (d === 'right') return `${exportCode.animName}_MovingRight`;
+            if (d === 'left') return `${exportCode.animName}_MovingLeft`;
+            if (d === 'up') return `${exportCode.animName}_MovingUp`;
+            if (d === 'down') return `${exportCode.animName}_MovingDown`;
+            return `${exportCode.animName}_${d}`;
         }
 
         const rightRow = getRowNameForDir('right');
@@ -1624,25 +1673,121 @@ function generateExportCode() {
         const downRow = getRowNameForDir('down');
 
         // 3. Clockwise obstacle turn rules
-        rulesCode += `[ > ${rightRow} | ${animName}_obstacle ] -> [ ${downRow}_frame0 | ${animName}_obstacle ]\n`;
-        rulesCode += `[ > ${leftRow} | ${animName}_obstacle ] -> [ ${upRow}_frame0 | ${animName}_obstacle ]\n`;
-        rulesCode += `[ > ${upRow} | ${animName}_obstacle ] -> [ ${rightRow}_frame0 | ${animName}_obstacle ]\n`;
-        rulesCode += `[ > ${downRow} | ${animName}_obstacle ] -> [ ${leftRow}_frame0 | ${animName}_obstacle ]\n`;
+        exportCode.rules += `[ > ${rightRow} | ${exportCode.animName}_obstacle ] -> [ ${downRow}_frame0 | ${exportCode.animName}_obstacle ]\n`;
+        exportCode.rules += `[ > ${leftRow} | ${exportCode.animName}_obstacle ] -> [ ${upRow}_frame0 | ${exportCode.animName}_obstacle ]\n`;
+        exportCode.rules += `[ > ${upRow} | ${exportCode.animName}_obstacle ] -> [ ${rightRow}_frame0 | ${exportCode.animName}_obstacle ]\n`;
+        exportCode.rules += `[ > ${downRow} | ${exportCode.animName}_obstacle ] -> [ ${leftRow}_frame0 | ${exportCode.animName}_obstacle ]\n`;
+        return exportCode;
+}
 
+function getExportCodeForPlayer(exportCode) {
+    exportCode.description = `These settings create an animation that cycles through once with each player move.`;
+    const keyRepeat = (parseFloat(exportCode.interval) + 0.1).toFixed(2);
+    exportCode.prelude = `realtime_interval ${exportCode.interval}\nthrottle_movement ${keyRepeat}`;
+
+    exportCode.objects = `( marker to prevent multiple frames per clock tick )\n${exportCode.animName}_hasAnimated\ntransparent\n\n`;
+
+    let allRowClassifications = [];
+    let firstFrameName = '';
+
+    state.rows.forEach((row, rIdx) => {
+        const rowName = (row.name || `${exportCode.animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
+        let frameNamesInRow = [];
+
+        row.frames.forEach((framePixels, fIdx) => {
+            const frameName = `${rowName}_frame${fIdx}`;
+            if (!firstFrameName) firstFrameName = frameName;
+            frameNamesInRow.push(frameName);
+
+            let gridLines = [];
+            for (let y = 0; y < state.height; y++) {
+                let rowStr = '';
+                for (let x = 0; x < state.width; x++) {
+                    const colorIdx = framePixels[x + y * state.width];
+                    rowStr += colorIdx >= 0 ? (SYMBOL_MAP[colorIdx] || '?') : '.';
+                }
+                gridLines.push(rowStr);
+            }
+            exportCode.objects += `${frameName}\n${exportCode.colorsLine}\n${gridLines.join('\n')}\n\n`;
+        });
+
+        allRowClassifications.push(`${rowName} = ${frameNamesInRow.join(' or ')}`);
+    });
+
+    const allRowNames = state.rows.map((r, i) => (r.name || `${exportCode.animName}_Row${i}`).trim().replace(/[^a-z0-9_]/gi, '_'));
+
+    // LEGEND SECTION
+    let legendLines = [
+        `( classify frames into directional states )`,
+        ...allRowClassifications,
+        ``,
+        `( group all directional states into main ${exportCode.animName} alias )`,
+        `${exportCode.animName} = ${allRowNames.join(' or ')}`,
+        ``,
+        `( use ${exportCode.mapChar} to place starting ${exportCode.animName} on map )`,
+        `${exportCode.mapChar} = ${firstFrameName || `${exportCode.animName}_MovingRight_frame0`}`,
+        `${exportCode.animName}_obstacle = Wall`
+    ];
+
+    // Avoid redundant 'Player = Player' statement
+    if (exportCode.animName.toLowerCase() !== 'player') {
+        legendLines.push(`Player = ${exportCode.animName}`);
     }
 
-    else if (animType === 'projectile') {
-        descriptionText = `These settings generate projectile movement and animation rules for firing objects across the screen.`;
-        const keyRepeat = (parseFloat(interval) + 0.1).toFixed(2);
-        preludeCode = `realtime_interval ${interval}\nthrottle_movement\nkey_repeat_interval ${keyRepeat}`;
+    exportCode.legend = legendLines.join('\n');
 
-        objectsCode = `( marker to prevent multiple frames per clock tick )\n${animName}_hasAnimated\ntransparent\n\n`;
+    // COLLISION LAYERS SECTION
+    exportCode.collision = `${exportCode.animName}_hasAnimated ( separate collision layer for animation state lock )`;
+
+    // RULES SECTION
+    exportCode.rules = `( ${exportCode.animName} animation cycle )\n( completes one cycle each time player moves )\nlate [ ${exportCode.animName}_hasAnimated ] -> []\n\n`;
+
+    state.rows.forEach((row, rIdx) => {
+        const rowName = (row.name || `${exportCode.animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
+        const lowerName = rowName.toLowerCase();
+        const frameCount = row.frames.length;
+
+        let dir = 'right';
+        if (lowerName.includes('left')) dir = 'left';
+        else if (lowerName.includes('up')) dir = 'up';
+        else if (lowerName.includes('down')) dir = 'down';
+
+        exportCode.rules += `( ${rowName} player animation cycle )\n`;
+
+        if (frameCount > 1) {
+            // Initial directional move triggers frame 1
+            exportCode.rules += `[ ${dir} ${exportCode.animName} ] -> [ ${dir} ${rowName}_frame1 ${exportCode.animName}_hasAnimated ]\n`;
+
+            // Step through remaining frames until returning to frame 0
+            for (let fIdx = 1; fIdx < frameCount; fIdx++) {
+                const nextIdx = (fIdx + 1) % frameCount;
+                exportCode.rules += `[ ${rowName}_frame${fIdx} no ${exportCode.animName}_hasAnimated ] -> [ ${rowName}_frame${nextIdx} ${exportCode.animName}_hasAnimated ]\n`;
+            }
+        } else {
+            exportCode.rules += `[ ${dir} ${exportCode.animName} ] -> [ ${dir} ${rowName}_frame0 ${exportCode.animName}_hasAnimated ]\n`;
+        }
+        exportCode.rules += `\n`;
+    });
+
+    // Sample object push rule for player interaction
+    exportCode.rules += `[ > Player | Crate ] -> [ > Player | > Crate ]\n`;
+
+    return exportCode;
+}
+
+
+function getExportCodeForProjectile(exportCode){
+    exportCode.description = `These settings generate projectile movement and animation rules for firing objects across the screen.`;
+        const keyRepeat = (parseFloat(exportCode.interval) + 0.1).toFixed(2);
+        exportCode.prelude = `realtime_interval ${exportCode.interval}\nthrottle_movement\nkey_repeat_interval ${keyRepeat}`;
+
+        exportCode.objects = `( marker to prevent multiple frames per clock tick )\n${exportCode.animName}_hasAnimated\ntransparent\n\n`;
 
         let allRowClassifications = [];
         let firstFrameName = '';
 
         state.rows.forEach((row, rIdx) => {
-            const rowName = (row.name || `${animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
+            const rowName = (row.name || `${exportCode.animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
             let frameNamesInRow = [];
 
             row.frames.forEach((framePixels, fIdx) => {
@@ -1659,21 +1804,28 @@ function generateExportCode() {
                     }
                     gridLines.push(rowStr);
                 }
-                objectsCode += `${frameName}\n${colorsLine}\n${gridLines.join('\n')}\n\n`;
+                exportCode.objects += `${frameName}\n${exportCode.colorsLine}\n${gridLines.join('\n')}\n\n`;
             });
 
             allRowClassifications.push(`${rowName} = ${frameNamesInRow.join(' or ')}`);
         });
 
-        const allRowNames = state.rows.map((r, i) => (r.name || `${animName}_Row${i}`).trim().replace(/[^a-z0-9_]/gi, '_'));
-        legendCode = `( classify frames into directional projectile aliases )\n${allRowClassifications.join('\n')}\n\n( group all projectile directions into main ${animName} alias )\n${animName} = ${allRowNames.join(' or ')}\n\n( list objects that collide with ${animName} here )\n${animName}Obstacle = Wall or Crate\n\n( map symbol ${mapChar} )\n${mapChar} = ${firstFrameName}`;
+        const allRowNames = state.rows.map((r, i) => (r.name || `${exportCode.animName}_Row${i}`).trim().replace(/[^a-z0-9_]/gi, '_'));
+        exportCode.legend = `( classify frames into directional projectile aliases )\n${allRowClassifications.join('\n')}\n\n`
+        if(state.rows.length > 1){
+            exportCode.legend += `( group all projectile directions into main ${exportCode.animName} alias )\n${exportCode.animName} = ${allRowNames.join(' or ')}\n\n`
+        }
+        exportCode.legend += `( list objects that collide with ${exportCode.animName} here )\n${exportCode.animName}Obstacle = Wall or Crate\n\n`
+        exportCode.legend += `( map symbol ${exportCode.mapChar} )\n${exportCode.mapChar} = ${firstFrameName}`;
+        
+        
 
-        collisionCode = `${animName}_hasAnimated ( separate collision layer for animation marker )`;
+        exportCode.collision = `${exportCode.animName}_hasAnimated ( separate collision layer for animation marker )`;
 
-        rulesCode = `late [ ${animName}_hasAnimated ] -> []\n\n`;
+        exportCode.rules = `late [ ${exportCode.animName}_hasAnimated ] -> []\n\n`;
 
         state.rows.forEach((row, rIdx) => {
-            const rowName = (row.name || `${animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
+            const rowName = (row.name || `${exportCode.animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
             const lowerName = rowName.toLowerCase();
 
             let dir = 'right';
@@ -1681,43 +1833,45 @@ function generateExportCode() {
             else if (lowerName.includes('up')) dir = 'up';
             else if (lowerName.includes('down')) dir = 'down';
 
-            rulesCode += `( ${rowName} projectile movement & frame cycle )\n`;
+            exportCode.rules += `( ${rowName} projectile movement & frame cycle )\n`;
             const frameCount = row.frames.length;
             for (let fIdx = 0; fIdx < frameCount; fIdx++) {
                 const currFrame = `${rowName}_frame${fIdx}`;
                 const nextFrame = `${rowName}_frame${(fIdx + 1) % frameCount}`;
-                rulesCode += `[ stationary Player ] [ ${currFrame} no ${animName}_hasAnimated ] -> [ Player ] [ ${dir} ${nextFrame} ${animName}_hasAnimated ]\n`;
+                exportCode.rules += `[ stationary Player ] [ ${currFrame} no ${exportCode.animName}_hasAnimated ] -> [ Player ] [ ${dir} ${nextFrame} ${exportCode.animName}_hasAnimated ]\n`;
             }
 
-            rulesCode += `( collision & obstacle destruction )\n`;
-            rulesCode += `[ ${rowName} target ] -> [ target ]\n`;
-            rulesCode += `[ ${rowName} ${animName}Obstacle ] -> [ ${animName}Obstacle ]\n\n`;
+            exportCode.rules += `( collision & obstacle destruction )\n`;
+            exportCode.rules += `[ ${rowName} target ] -> [ target ]\n`;
+            exportCode.rules += `[ ${rowName} ${exportCode.animName}Obstacle ] -> [ ${exportCode.animName}Obstacle ]\n\n`;
         });
 
-        rulesCode += `( spawn ${animName} when action button pressed )\n`;
+        exportCode.rules += `( spawn ${exportCode.animName} when action button pressed )\n`;
         state.rows.forEach((row, rIdx) => {
-            const rowName = (row.name || `${animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
+            const rowName = (row.name || `${exportCode.animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
             const lowerName = rowName.toLowerCase();
             let dir = 'right';
             if (lowerName.includes('left')) dir = 'left';
             else if (lowerName.includes('up')) dir = 'up';
             else if (lowerName.includes('down')) dir = 'down';
 
-            rulesCode += `[ action Player_facing_${dir} ] -> [ Player_facing_${dir} ${rowName}_frame0 ]\n`;
+            exportCode.rules += `[ action Player_facing_${dir} ] -> [ Player_facing_${dir} ${rowName}_frame0 ]\n`;
         });
+        return exportCode;
+}
 
-    } else {
-        // Stationary mode
-        descriptionText = `These settings work well for "Stationary" objects that either don't move at all or cycle frames continuously.`;
-        preludeCode = `realtime_interval ${interval}`;
+function getExportCodeForStationary(exportCode){
+    // Stationary mode
+        exportCode.description = `These settings work well for "Stationary" objects that either don't move at all or cycle frames continuously.`;
+        exportCode.prelude = `realtime_interval ${exportCode.interval}`;
 
-        objectsCode = `( marker to prevent multiple frames per clock tick )\n${animName}_hasAnimated\ntransparent\n\n`;
+        exportCode.objects = `( marker to prevent multiple frames per clock tick )\n${exportCode.animName}_hasAnimated\ntransparent\n\n`;
 
         let allRowClassifications = [];
         let firstFrameName = '';
 
         state.rows.forEach((row, rIdx) => {
-            const rowName = (row.name || `${animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
+            const rowName = (row.name || `${exportCode.animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
             let frameNamesInRow = [];
 
             row.frames.forEach((framePixels, fIdx) => {
@@ -1734,58 +1888,39 @@ function generateExportCode() {
                     }
                     gridLines.push(rowStr);
                 }
-                objectsCode += `${frameName}\n${colorsLine}\n${gridLines.join('\n')}\n\n`;
+                exportCode.objects += `${frameName}\n${exportCode.colorsLine}\n${gridLines.join('\n')}\n\n`;
             });
 
             allRowClassifications.push(`${rowName} = ${frameNamesInRow.join(' or ')}`);
         });
 
-        const allRowNames = state.rows.map((r, i) => (r.name || `${animName}_Row${i}`).trim().replace(/[^a-z0-9_]/gi, '_'));
-        legendCode = `( classify frames into animation alias )\n${allRowClassifications.join('\n')}\n\n${animName} = ${allRowNames.join(' or ')}\n\n( map symbol ${mapChar} )\n${mapChar} = ${firstFrameName}`;
+        const allRowNames = state.rows.map((r, i) => (r.name || `${exportCode.animName}_Row${i}`).trim().replace(/[^a-z0-9_]/gi, '_'));
+        exportCode.legend = `( classify frames into animation alias )\n${allRowClassifications.join('\n')}\n\n`
+        if(state.rows.length > 1){
+            exportCode.legend +=`${exportCode.animName} = ${allRowNames.join(' or ')}\n\n`
+        }
+        exportCode.legend +=`( map symbol ${exportCode.mapChar} )\n${exportCode.mapChar} = ${firstFrameName}`;
 
-        collisionCode = `${animName}_hasAnimated ( separate collision layer )`;
+        exportCode.collision = `${exportCode.animName}_hasAnimated ( separate collision layer )`;
 
-        rulesCode = `late [ ${animName}_hasAnimated ] -> []\n\n`;
+        exportCode.rules = `late [ ${exportCode.animName}_hasAnimated ] -> []\n\n`;
 
         state.rows.forEach((row, rIdx) => {
-            const rowName = (row.name || `${animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
-            rulesCode += `( ${rowName} frame cycling rule )\n`;
+            const rowName = (row.name || `${exportCode.animName}_Row${rIdx}`).trim().replace(/[^a-z0-9_]/gi, '_');
+            exportCode.rules += `( ${rowName} frame cycling rule )\n`;
             const frameCount = row.frames.length;
             if (frameCount > 1) {
                 for (let fIdx = 0; fIdx < frameCount; fIdx++) {
                     const currFrame = `${rowName}_frame${fIdx}`;
                     const nextFrame = `${rowName}_frame${(fIdx + 1) % frameCount}`;
-                    rulesCode += `[ stationary Player ] [ ${currFrame} no ${animName}_hasAnimated ] -> [ Player ] [ ${nextFrame} ${animName}_hasAnimated ]\n`;
+                    exportCode.rules += `[ stationary Player ] [ ${currFrame} no ${exportCode.animName}_hasAnimated ] -> [ Player ] [ ${nextFrame} ${exportCode.animName}_hasAnimated ]\n`;
                 }
             } else {
-                rulesCode += `( single frame animation - no cycling rules required )\n`;
+                exportCode.rules += `( single frame animation - no cycling rules required )\n`;
             }
-            rulesCode += `\n`;
+            exportCode.rules += `\n`;
         });
-    }
-
-    // Update UI elements
-    if (document.getElementById('modalAnimTypeBadge')) {
-        document.getElementById('modalAnimTypeBadge').innerText = animType.toUpperCase();
-    }
-    if (document.getElementById('spriteTypeDescription')) {
-        document.getElementById('spriteTypeDescription').innerText = descriptionText;
-    }
-    if (document.getElementById('exportPreludeCode')) {
-        document.getElementById('exportPreludeCode').value = preludeCode.trim();
-    }
-    if (document.getElementById('exportObjectsCode')) {
-        document.getElementById('exportObjectsCode').value = objectsCode.trim();
-    }
-    if (document.getElementById('exportLegendCode')) {
-        document.getElementById('exportLegendCode').value = legendCode.trim();
-    }
-    if (document.getElementById('exportCollisionLayersCode')) {
-        document.getElementById('exportCollisionLayersCode').value = collisionCode.trim();
-    }
-    if (document.getElementById('exportRulesCode')) {
-        document.getElementById('exportRulesCode').value = rulesCode.trim();
-    }
+        return exportCode;
 }
 
 /* Frame Transformation Actions */
