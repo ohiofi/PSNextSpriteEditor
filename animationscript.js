@@ -1102,93 +1102,110 @@ function copyField(elementId) {
 
 /* Import Sprites into Rows & Frames */
 function importAnimationCode() {
-    const rawText = document.getElementById('importAnimCodeArea').value.trim();
-    const errBox = document.getElementById('importAnimErrorAlert');
-    errBox.classList.add('d-none');
+  const rawText = document.getElementById('importAnimCodeArea').value.trim();
+  const errBox = document.getElementById('importAnimErrorAlert');
+  errBox.classList.add('d-none');
 
-    if (!rawText) {
-        errBox.innerText = 'Please paste valid PuzzleScript sprite code!';
-        errBox.classList.remove('d-none');
-        return;
-    }
+  if (!rawText) {
+    errBox.innerText = 'Please paste valid PuzzleScript sprite code!';
+    errBox.classList.remove('d-none');
+    return;
+  }
 
-    try {
-        const blocks = rawText.split(/\\n\\s*\\n/).filter(b => b.trim().length > 0);
-        let parsedRowsMap = {};
-        let importedPalette = null;
-        let impW = 0, impH = 0;
+  try {
+    // 1. Normalize Windows/Mac line endings (\r\n -> \n)
+    const cleanText = rawText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
-        blocks.forEach(block => {
-            const lines = block.split('\\n').map(l => l.trim()).filter(l => l.length > 0 && !l.startsWith('('));
-            if (lines.length < 2) return;
+    // 2. Split into distinct blocks by double newlines or blank lines
+    const blocks = cleanText.split(/\n\s*\n/).filter(b => b.trim().length > 0);
+    let parsedRowsMap = {};
+    let importedPalette = null;
+    let impW = 0, impH = 0;
 
-            const title = lines[0];
-            let rowName = title;
-            if (title.includes('_frame')) {
-                rowName = title.substring(0, title.lastIndexOf('_frame'));
-            }
+    blocks.forEach(block => {
+      // Clean lines and strip PuzzleScript comments (lines starting with '(')
+      const lines = block.split('\n')
+        .map(l => l.trim())
+        .filter(l => l.length > 0 && !l.startsWith('('));
 
-            const colorTokens = lines[1].split(/\\s+/);
-            const newPalette = colorTokens.map(tok => PS_COLOR_NAMES[tok.toLowerCase()] || tok);
-            if (!importedPalette) importedPalette = newPalette;
+      if (lines.length < 2) return;
 
-            const gridLines = lines.slice(2);
-            if (gridLines.length === 0) return;
+      // Extract Title & Row Name
+      const title = lines[0];
+      let rowName = title;
+      if (title.includes('_frame')) {
+        rowName = title.substring(0, title.lastIndexOf('_frame'));
+      }
 
-            impH = gridLines.length;
-            impW = Math.max(...gridLines.map(l => l.length));
+      // Extract Palette (Line 1 or start of block)
+      const colorTokens = lines[1].split(/\s+/);
+      const newPalette = colorTokens.map(tok => PS_COLOR_NAMES[tok.toLowerCase()] || tok);
+      if (!importedPalette && newPalette.every(c => c.startsWith('#') || PS_COLOR_NAMES[c.toLowerCase()])) {
+        importedPalette = newPalette;
+      }
 
-            const pixels = new Array(impW * impH).fill(-1);
+      // Extract Pixel Grid Lines (Lines 2 onwards)
+      const gridLines = lines.slice(2);
+      if (gridLines.length === 0) return;
 
-            for (let y = 0; y < impH; y++) {
-                const line = gridLines[y];
-                for (let x = 0; x < line.length; x++) {
-                    const ch = line[x];
-                    pixels[x + y * impW] = (ch === '.' || ch === ' ') ? -1 : SYMBOL_MAP.indexOf(ch);
-                }
-            }
+      const frameH = gridLines.length;
+      const frameW = Math.max(...gridLines.map(l => l.length));
 
-            if (!parsedRowsMap[rowName]) parsedRowsMap[rowName] = [];
-            parsedRowsMap[rowName].push(pixels);
-        });
+      if (frameW > impW) impW = frameW;
+      if (frameH > impH) impH = frameH;
 
-        const rowNames = Object.keys(parsedRowsMap);
-        if (rowNames.length === 0) throw new Error('Could not parse any frame blocks.');
+      const pixels = new Array(frameW * frameH).fill(-1);
 
-        pushUndoState();
-
-        state.rows = rowNames.map((rName, idx) => ({
-            id: 'row_' + idx + '_' + Date.now(),
-            name: rName,
-            frames: parsedRowsMap[rName]
-        }));
-
-        if (importedPalette) state.palette = importedPalette;
-        state.width = impW;
-        state.height = impH;
-        state.activeRowIndex = 0;
-        state.activeFrameIndex = 0;
-
-        if (document.getElementById('gridWidth')) document.getElementById('gridWidth').value = impW;
-        if (document.getElementById('gridHeight')) document.getElementById('gridHeight').value = impH;
-        if (document.getElementById('gridDimBadge')) document.getElementById('gridDimBadge').innerText = `${impW} x ${impH}`;
-
-        renderPaletteUI();
-        renderFramesGridUI();
-        renderAll();
-
-        const modalEl = document.getElementById('importAnimModal');
-        if (modalEl) {
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
+      for (let y = 0; y < frameH; y++) {
+        const line = gridLines[y];
+        for (let x = 0; x < line.length; x++) {
+          const ch = line[x];
+          pixels[x + y * frameW] = (ch === '.' || ch === ' ') ? -1 : SYMBOL_MAP.indexOf(ch);
         }
+      }
 
-        showToast(`Imported ${blocks.length} frames across ${state.rows.length} rows!`);
-        autoSaveAnim();
-    } catch (err) {
-        errBox.innerText = 'Import failed: ' + err.message;
-        errBox.classList.remove('d-none');
+      if (!parsedRowsMap[rowName]) parsedRowsMap[rowName] = [];
+      parsedRowsMap[rowName].push(pixels);
+    });
+
+    const rowNames = Object.keys(parsedRowsMap);
+    if (rowNames.length === 0) throw new Error('Could not parse any frame blocks. Ensure frames have a header name, color palette, and pixel grid.');
+
+    pushUndoState();
+
+    state.rows = rowNames.map((rName, idx) => ({
+      id: 'row_' + idx + '_' + Date.now(),
+      name: rName,
+      frames: parsedRowsMap[rName]
+    }));
+
+    if (importedPalette) state.palette = importedPalette;
+    state.width = impW;
+    state.height = impH;
+    state.activeRowIndex = 0;
+    state.activeFrameIndex = 0;
+
+    if (document.getElementById('gridWidth')) document.getElementById('gridWidth').value = impW;
+    if (document.getElementById('gridHeight')) document.getElementById('gridHeight').value = impH;
+    if (document.getElementById('gridDimBadge')) document.getElementById('gridDimBadge').innerText = `${impW} x ${impH}`;
+
+    renderPaletteUI();
+    renderFramesGridUI();
+    renderAll();
+
+    const modalEl = document.getElementById('importAnimModal');
+    if (modalEl) {
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      if (modal) modal.hide();
     }
+
+    const totalFrames = state.rows.reduce((acc, r) => acc + r.frames.length, 0);
+    showToast(`Successfully imported ${totalFrames} frame(s) into row "${rowNames[0]}"!`);
+    autoSaveAnim();
+  } catch (err) {
+    errBox.innerText = 'Import failed: ' + err.message;
+    errBox.classList.remove('d-none');
+  }
 }
 
 /* Undo / Redo */
