@@ -81,17 +81,17 @@ body {
 	border-radius: 0px;
 }
 
-/* Make card headers clickable and animate the caret icon */
-.card-header[data-bs-toggle="collapse"] {
+/* Make card header spans clickable and animate the caret icon */
+.card-header span[data-bs-toggle="collapse"] {
   cursor: pointer;
   user-select: none;
 }
 
-.card-header[data-bs-toggle="collapse"] .collapse-icon {
+.card-header span[data-bs-toggle="collapse"] .collapse-icon {
   transition: transform 0.2s ease;
 }
 
-.card-header[data-bs-toggle="collapse"].collapsed .collapse-icon {
+.card-header span[data-bs-toggle="collapse"].collapsed .collapse-icon {
   transform: rotate(-90deg);
 }
 
